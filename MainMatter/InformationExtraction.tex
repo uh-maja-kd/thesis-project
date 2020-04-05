@@ -76,24 +76,25 @@ Usualmente este clasificador está constituído por un Perceptrón Multicapa~(ML
 Existen dos técnicas fundamentales que se han empleado en la literatura con este fin: Redes Neuronales Convolucionales y Redes Neuronales Recurrentes/Recursivas.
 Los modelos que se apoyan en CNN~\cite{zeng2014relation, santos2015classifying, nguyen2015relation, xu2015semantic, huang2016attention, wang2016relation}, explotan la capacidad de las mismas para obtener relaciones entre grupos continuos de palabras de una oración, denominados \textit{n-gramas}.
 
-
 En su trabajo, \textit{Zeng et al, 2014}~\cite{zeng2014relation} proponen una CNN para capturar los rasgos de la oración y las entidades en cuestión.
 Incluyen información de los \textit{tokens} adyacentes de cada palabra.
 La representación final de la oración la obtienen mediante una operación de \textit{max pooling} sobre el conjunto de vectores resultante de cada una de las ventanas de convolución.
 La clasificación se obtiene mediante un MLP con activación \textit{softmax}, sobre el conjunto de relaciones más la clase ficticia \textit{none}.
 Mientras este trabajo utiliza una covolución con ventanas fijas, \textit{Nguyen y Grishman}~\cite{nguyen2015relation} exploran el uso de varias convoluciones con distintos tamaños de ventanas.
 Por su parte, \textit{Santos et al}~\cite{santos2015classifying} proponen una alternativa para deshacerse de la clase ficticia.
-Para ello entrenan el modelo minimizando una función de pérdida definida por pares, uno positivo y uno negativo.
+Para ello entrenan el modelo minimizando una función de pérdida de \textit{ranking} definida por pares.
 Esto trae como consecuencia una mejora notable de los resultados de su arquitectura tanto en precisión como en recobrado.
-
 
 Por su parte, los modelos basado en RNN~\cite{socher2012semantic, xu2015classifying, zhang2015bidirectional, ebrahimi2015chain, xiao2016semantic, lee2019semantic}, se apoyan en la posibilidades de las mismas para obtener representaciones vectoriales de estructuras secuenciales, así como de estructuras más complejas~(estructuras arbóreas por ejemplo), codificando de esta forma patrones globales y no necesariamente consecutivos dentro de la oración.
 
-En 2015, \textit{Zhang et al}~\cite{zhang2015bidirectional} propusieron el uso de una red BiLSTM sobre la secuencia de \textit{tokens} para obtener una representación de la oración de entrada.
+En 2015, \textit{Zhang et al}~\cite{zhang2015bidirectional} propusieron el uso de una red BiLSTM sobre la secuencia de \textit{tokens} para obtener una representación de la oración con la mención de la relación.
 Obtienen además una representación de las entidades mediante la concatenación de distintos rasgos léxicos y la salida correspondiente de la red BiLSTM.
-La representación de la oración y las entidades, y se combinan mediante un MLP., cuya salida pasa por un clasificador \textit{softmax} para predecir la relación resultante.
+La representación de la oración y las entidades, y se combinan mediante un MLP, cuya salida pasa por un clasificador \textit{softmax} para predecir la relación resultante.
 
 Existen trabajos con propuestas que combinan el uso de CNN y RNN para distintas funciones~\cite{liu2015dependency, nguyen2015combining, cai2016bidirectional}.
+En 2015, \textit{Nguyen y Grishman}~\cite{nguyen2015combining} propusieron el uso de aquitecturas que utilizan CNN y RNN para hallar una representación de la oración con la mención de la relación, y experimentaron con distintos métodos de ensamblar los resultados de las mismas.
+Por otro lado, \textit{Cai y Wang}~\cite{cai2016bidirectional} proponen una arquitectura convolucional/recurrente bidireccional~(BRCNN de acuerdo a sus siglas en inglés) que utiliza una capa CNN apilada sobre una capa LSTM.
+Aplican esta arquitectura sobre la secuencia de entrada escogida~(construida a partir del camino en el árbol de dependencias) y sobre su reverso, para capturar la direccionalidad de las relaciones.
 
 Como entrada para estos modelos puede ser utilizada la secuencia de palabras de la oración, sin ningún preprocesamiento~\cite{zeng2014relation, santos2015classifying, nguyen2015relation, huang2016attention, wang2016relation, xiao2016semantic}.
 Lo anterior responde al supuesto de que la información más completa para resolver este problema se encuentra en la oración íntegra.
@@ -104,14 +105,26 @@ Otras variantes se apoyan en la suposición de que el árbol de dependencias de 
 En algunos casos se toma como representación de la entrada el camino en dicho árbol entre las entidades marcadas~\cite{socher2012semantic, xu2015classifying, hashimoto2015task, xu2015semantic, liu2015dependency, ebrahimi2015chain}.
 En otros casos solo se añade información relevante extraída de esta estructura~\cite{zhang2015bidirectional}.
 
-Para la representación de las palabras en una oración, ha demostrado ser efectivo el uso de \textit{embeddings} de palabras preentrenados en modelos generales del lenguaje. 
+Para la representación de las palabras en una oración, ha demostrado ser efectivo el uso de \textit{embeddings} de palabras preentrenados en modelos generales del lenguaje.
 Además, ha sido comprobado por la mayoría de los trabajos antes mencionados, que estos modelos ganan en efectividad cuando se enriquecen con características como: \textit{POS-tags}, información del tipo de las entidades señaladas, hiperónimos de \textit{WordNet} e información de las palabras adyacentes a las entidades señaladas.
 
 Otro recurso que ha probado ser útil, no solo en esta sino en otras múltiples tareas de NLP, es la atención. 
 En la tarea de extracción de relaciones se ha verificado que incluir niveles de atención sobre las palabras de la oración en función de las entidades señaladas, mejora la efectividad de los modelos, ya que ayuda a descartar información no relevante en la representación escogida~\cite{huang2016attention, wang2016relation, xiao2016semantic, lee2019semantic}.
 
+La propuesta de \textit{Huang y Shen}~\cite{huang2016attention}, utiliza un mecanismo de atención sobre objetos heterogéneos, dígase la oración y las dos entidades en cuestión.
+Con esto persiguen el objetivo de brindarle al modelo la capacidad de determinar qué partes de la oración son más influyentes con respecto a las dos entidades de interés.
+
+\textit{Wang et al}~\cite{wang2016relation} consideran el uso de distintos niveles de atención.
+Un nivel primario sobre la oración con respecto a las dos entidades en cuestión.
+Sobre la secuencia se resultante aplican una operación de convolución para capturar información contextual, seguida por una operación de \textit{max-pooling}.
+Utilizan luego un nivel secundario de atención para determinar la características resultantes de la convolución más relevantes para la clasificación de la relación .
+
+\textit{Xiao y Liu}~\cite{xiao2016semantic} proponen el uso de dos BiLSTM apiladas con capas de atención intercaladas para descartar información irrelevante que aparece cuando se utiliza como entrada la oración completa.
+Para capturar información referente a la relación mencionada, dividen la codificación obtenida por las BiLSTM en tres contextos, resultantes de dividir la oración en los lugares donde aparecen ubicadas las entidades en cuestión.
+
 Recientemente, el modelo preentrenado BERT~\cite{BERT} ha tenido resultados satisfactorios en muchas tareas de NLP.
-En 2019, \textit{Soares et al}~\cite{soares2019matching} desarrollaron modelos basados en BERT para producir representaciones de relaciones en una oración. Entre tanto \textit{Wu y He}~\cite{wu2019enriching} propusieron un modelo para atacar el problema de la extracción de relaciones que combina información obtenida a partir de BERT con información extraída de las entidades señaladas.
+En 2019, \textit{Soares et al}~\cite{soares2019matching} investigaron distintas arquitecturas para codificar una mención de una relación, todas construidas a partir de reoptimizar los parámetros del modelo BERT con objetivos de entrenamiento enfocados en la extracción de relaciones. 
+Entre tanto \textit{Wu y He}~\cite{wu2019enriching} proponen un modelo para atacar el problema de la extracción de relaciones que combina información obtenida a partir de BERT con información extraída de las entidades señaladas.
 
 \section{Enfoque Conjunto}
 %===================================================================================
