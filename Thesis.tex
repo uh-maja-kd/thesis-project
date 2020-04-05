@@ -1,0 +1,55 @@
+\documentclass[11pt,oneside]{uhthesis}
+\usepackage{subfigure}
+\usepackage[linesnumbered,lined,titlenumbered,ruled]{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+\usepackage{mathpazo}
+\usepackage{float}
+\usepackage{braket}
+
+%\floatstyle{ruled}
+%\restylefloat{table}
+
+\renewcommand{\tablename}{Tabla}
+%\dontprintsemicolon
+
+\title{Propuesta Basada en Aprendizaje Profundo para la Extracci\'on de Información de Textos con Contenido M\'edico Escritos en Español} 
+\author{Ernesto Quevedo Caballero. \newline Alejandro Rodr\'iguez P\'erez}
+\advisor{MsC. Juan Pablo Consuegra Ayala \newline Lic. Rocío Cruz Linares}
+\degree{Licenciado en Ciencia de la Computación}
+\faculty{Facultad de Matemática y Computación}
+\date{Mayo de 2020}
+\logo{Graphics/uhlogo}
+\makenomenclature
+
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\diff}[1]{\ensuremath{\mathrm{d}#1}}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\include{FrontMatter/Dedication}
+\include{FrontMatter/Thanks}
+\include{FrontMatter/SupervisorOpinion}
+\include{FrontMatter/Abstract}
+\include{FrontMatter/Contents}
+
+\mainmatter
+	
+\include{MainMatter/Introduction}
+\include{MainMatter/InformationExtraction}
+\include{MainMatter/Entities}
+\include{MainMatter/Relations}
+\include{MainMatter/Experiments}
+
+\backmatter
+
+\include{BackMatter/Conclusions}
+\include{BackMatter/Bibliography}
+
+\bibliography{Bibliography}
+
+\end{document}
