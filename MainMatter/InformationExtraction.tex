@@ -8,6 +8,95 @@
 
 \section{Extracción de Relaciones}
 
+Dada una oración $S$ con dos entidades señaldas $\langle e1,e2 \rangle$, la tarea de la extracción de relaciones consiste en identificar la relación semántica que se establece entre $e1$ y $e2$, seleccionada de un conjunto predefinido de relaciones candidatas~\cite{hendrickx2009semeval}.
+Este problema se puede estructurar como un problema de clasficación multiclase en el que la salida esperada es una de múltiples clases predefinidas, incluyendo una clase ficticia para cuando la supuesta relación no aparece entre el conjunto de relaciones predefinidas.
+
+En años pasados, la literatura registra dos enfoques fundamentales para resolver este problema: los métodos basados en características~\cite{kambhatla2004combining, boschee2005automatic, guodong2005exploring, grishman2005nyu, jiang2007systematic, chan2010exploiting, rink2010utd, sun2011semi, rink2010utd, nguyen2014employing} y los métodos basados en \textit{kernels}~\cite{zelenko2003kernel, culotta2004dependency, bunescu2005shortest, qian2008exploiting, nguyen2009convolution, sun2014feature}, los cuales se diferencian en la forma en que representan las relaciones entre las entidades.
+
+\subsection{Enfoques basados en características}
+
+Los métodos basados en características convierten la entrada del problema en una representación vectorial $(f_1,f_2,\dots,f_N)$ de $N$ componentes.
+Cada una estas componentes constituye una característica que hipotéticamente es efectiva para discriminar la existencia de relaciones entre las entidades.
+Con esta representación, son entrenados algoritmos de aprendizaje de máquina estadístico como Máquina Soporte Vectorial~(SVM)\cite{cortes1995support} y clasificador de Máxima Entropía~(MEC)~\cite{maxentropy}.
+Las características seleccionadas pueden tener naturaleza léxica, sintáctica o semántica.
+
+De alguna forma u otra, todos los modelos incluyen información de las entidades en cuestión.
+La forma más simple de obtener esta representación es un índice que identifique la palabra dentro un vocabulario predeterminado.
+No obstante, en trabajos más recientes se ha explorado el uso de representaciones vectoriales de las palabras, inducidas por modelos del lenguaje previamente entrenados en otras tareas~\cite{nguyen2014employing}.
+Una de estas representaciones son los \textit{embeddings} de palabras~\cite{mikolov_word_embeddings}.
+
+En una metodología general, enfrentar la tarea de extracción de relaciones usualmente implica que anteriormente se hizo un análisis, manual o automático, de las entidades presentes en el texto y el tipo de las mismas. 
+Existe una variedad de trabajos que validan la utilidad de esta información, ya que permite por ejemplo, restringir el dominio de algunas relaciones a ciertos tipos de entidades~\cite{kambhatla2004combining, boschee2005automatic, guodong2005exploring, jiang2007systematic, chan2010exploiting}.
+
+Como complemento de la información que aportan las entidades en cuestión, también se ha evaluado el uso de sus contextos.
+Dígase las palabras que son adyacentes, palabras entre las menciones o palabras antes y depués de las menciones~\cite{guodong2005exploring, chan2010exploiting, sun2011semi, nguyen2014employing}.
+
+Han probado ser efectivas características extraídas de las estructuras que resultan del análisis sintáctico~(parsing) de la oración.
+Entre estas estructuras se encuentran los árboles de constituyentes~(o sintácticos) y los de dependencias.
+Los árboles de constituyentes capturan la estructura sintáctica de la oración de acuerdo a una gramática estructurada por frases~(o gramáticas de constituyentes)~\cite{chomsky2002syntactic}.
+Entre tanto, los árboles de dependencias describen la estructura sintáctica de la oración solamente en términos de las palabras de la misma y un conjunto asociado de relaciones gramaticales binarias que se establecen entre las ellas~\cite{tesniere2015elements}.
+Otro recurso sintáctico empleado son las etiquetas de parte de la oración~(\textit{POS-tag} por sus siglas en inglés), que describen la función gramatical que tiene cada palabra dentro de la oración.
+En el año 2004, \textit{Kambhatla}~\cite{kambhatla2004combining} propuso utilizar el camino en el árbol de parsing sintáctico, así como la palabra en la que cada entidad era dependiente, la función gramatical de la frase que las une y su \textit{POS-tag}.
+Otras combinaciones de las cabeceras y dependientes de las entidades, sus funciones gramaticales y \textit{POS-tag} fueron analizadas por \textit{GuoDong} en 2005~\cite{guodong2005exploring}~\footnote{Varios de los trabajos citados en este estudio tomaron este conjunto de características como base de sus modelos}.
+
+Debido a la naturaleza semántica que pueden tener las relaciones a extraer, las fuentes externas de información semántica constituyen otro amplio espacio de características relevantes.
+Una de la fuentes más utilizadas es el diccionario el hiperórimos de \textit{WordNet}~\footnote{http://wordnet.princeton.edu/}~\cite{guodong2005exploring, rink2010utd}.
+El trabajo realizado por \textit{Rink y Harabagiu} en 2010~\cite{rink2010utd} investiga la influencia de otra variedad de fuentes externas de información semántica como: NomLex-Plus~\footnote{http://nlp.cs.nyu.edu/meyers/NomBank.html}, VerbNet~\footnote{http://verbs.colorado.edu/ mpalmer/projects/verbnet.html}, N-gramas de Google~\footnote{Disponible desde LDC como LDC2006T13} y TextRunner~\cite{yates2007textrunner}.
+En 2010, \textit{Chan y Roth}~\cite{chan2010exploiting} propusieron utilizar información extraída de \textit{Wikipedia}.
+
+\subsection{Enfoques basados en kernels}
+
+Los métodos basados en \textit{kernels}, por su parte, pueden prescindir de representaciones complejas de las estructuras de una oración. 
+Se apoyan en funciones con características especiales denominadas \textit{kernels}.
+Un \textit{kernel} $K$ sobre un espacio vectorial $E$ es una función binaria $K:E\times E\rightarrow [0,\infty)$ simétrica y semidefinida positiva.
+Se puede demostrar que una función de \textit{kernel} calcula implícitamente el producto escalar de vectores que representan a los objetos en espacios de características de grandes~(y potencialmente infinitas) dimensiones~\cite{demostracion}.
+Esto es, $\exists f:E\rightarrow T$ con $dim(T)$ posiblemente infinito, tal que $K(x,y)=g(f(x),f(y))$, con $g:T\times T \rightarrow R$ un producto escalar definido sobre $T$. También se cumple el recíproco de este teorema.
+Esta propiedad de los \textit{kernels} le permite a los algoritmos de aprendizaje representar, aunque implícitamente, los objetos en espacios de grandes dimensiones y computar su producto escalar eficientemente como medida de similaridad.
+
+Cuando un algoritmo de aprendizaje puede ser reescrito en términos de una función de \textit{kernel} sustituyendo al producto escalar, se le denomina algoritmo dual.
+Existen diversos algoritmos que hacen uso de las facilidades que presentan los \textit{kernel}.
+Entre ellos se encuentran SVM~\cite{cortes1995support} y Perceptrón de Kernel~\cite{aizerman1964theoretical}.
+
+Desde punto de vista del diseño de algoritmos de aprendizaje de máquinas, este enfoque centra su atención en la definición de \textit{kernels} que midan correctamente la similaridad entre los objetos, delegando el trabajo de obtener una representación adecuada para ello a la función escogida.
+Estos estudios proponen deficiones de \textit{kernels} sobre estructuras como: árboles de parsing sintáctico~\cite{zelenko2003kernel, zhao2005extracting, zhang2006composite, zhou2007tree}, árboles de dependencias~\cite{culotta2004dependency, bunescu2005shortest, zhao2005extracting} y subsecuencias del texto~\cite{zhao2005extracting, mooney2006subsequence}, por citar algunos ejemplos.
+
+Rara vez estas propuestas son puramente basadas en \textit{kernels}.
+Se ha explorado la posibilidad de enriquecer las representaciones con propiedades típicas de enfoques basados en características~\cite{culotta2004dependency, bunescu2005shortest, zhang2006composite, zhao2005extracting}.
+
+\subsection{Enfoques basados en aprendizaje profundo}
+
+Con el desarrollo de las técnicas de aprendizaje profundo, los investigadores han explotado este nuevo enfoque para enfrentar el problema de la extracción de relaciones.
+Hasta este punto, los métodos para ello se concentraron en aprendizaje de máquinas estadístico y su desempeño dependía de la calidad de las características extraídas, o de los \textit{kernels} definidos.
+La mayoría de las propuestas se apoyaban de manera determinante, en técnicas de NLP que constituyen problemas parcialmente resueltos con cierto grado de error, como parsing de dependencias, parsing sintáctico, extracción de entidades y etiquetado en partes de la oración; lo cual conducía a una propagación del error.
+Las capacidades de las técnicas de aprendizaje profundo para obtener representaciones complejas a partir de estructuras más simples, es la suposición esencial a la que responden los enfoques más modernos.
+
+De manera general, estas técnicas se centran en obtener una representación simple de la oración y las entidades en señaladas, la cual sirve de entrada a un clasificador mutliclases que determina a cuál de las relaciones responde el par ordenado $\langle e_1,e_2\rangle$.
+Usualmente este clasificador está constituído por un Perceptrón Multicapa~(MLP), también conocido como capa densa o completamente conectada, seguido de una capa de neuronas con función de activación \textit{softmax}, que genera una distribución de probabilidades sobre las posibles relaciones.
+
+Existen dos técnicas fundamentales que se han empleado en la literatura con este fin: Redes Neuronales Convolucionales y Redes Neuronales Recurrentes/Recursivas.
+Los modelos que se apoyan en CNN~\cite{zeng2014relation, santos2015classifying, nguyen2015relation, xu2015semantic, huang2016attention, wang2016relation}, explotan la capacidad de las mismas para obtener relaciones entre grupos continuos de palabras de una oración, denominados \textit{n-gramas}. 
+Para obtener una representación de la oración completa se utiliza, en el caso más común, \textit{max-pooling} sobre el conjunto de vectores resultante de cada una de las ventanas de convolución.
+Por su parte, los modelos basado en RNN~\cite{socher2012semantic, xu2015classifying, zhang2015bidirectional, ebrahimi2015chain, xiao2016semantic, lee2019semantic}, se apoyan en la posibilidades de las mismas para obtener representaciones vectoriales de estructuras secuenciales, así como de estructuras más complejas~(estructuras arbóreas por ejemplo), codificando de esta forma patrones globales y no necesariamente consecutivos dentro de la oración.
+Existen trabajos con propuestas que combinan estos dos enfoques~\cite{liu2015dependency, nguyen2015combining, cai2016bidirectional}.
+
+Como entrada para estos modelos puede ser utilizada la secuencia de palabras de la oración, sin ningún preprocesamiento~\cite{zeng2014relation, santos2015classifying, nguyen2015relation, huang2016attention, wang2016relation, xiao2016semantic}.
+Lo anterior responde al supuesto de que la información más completa para resolver este problema se encuentra en la oración íntegra.
+Estos son conocidos como modelos \textit{end-to-end}.
+Para que el modelo no sea agnóstico de la posición de las entidades de la oración, se añade lo que se denomina características de posición, que codifican la posición relativa de cada \textit{token} de la oración con respecto a las entidades en cuestión~\cite{zeng2014relation, santos2015classifying, nguyen2015relation, zhang2015bidirectional,nguyen2015combining,huang2016attention, wang2016relation, xiao2016semantic, lee2019semantic}.
+
+Otras variantes se apoyan en la suposición de que el árbol de dependencias de la oración de entrada condensa la información vital para resolver el problema, a la vez que desecha otras fuentes de desinformación.
+En algunos casos se toma como representación de la entrada el camino en dicho árbol entre las entidades marcadas~\cite{xu2015classifying, hashimoto2015task, xu2015semantic, liu2015dependency, ebrahimi2015chain}.
+En otros casos solo se añade información relevante extraída de esta estructura~\cite{zhang2015bidirectional}.
+
+Para la representación de las palabras en una oración, ha demostrado ser efectivo el uso de \textit{embeddings} de palabras preentrenados en modelos generales del lenguaje. 
+Además, ha sido comprobado por la mayoría de los trabajos antes mencionados, que estos modelos ganan en efectividad cuando se enriquecen con características como: \textit{POS-tags}, información del tipo de las entidades señaladas, hiperónimos de \textit{WordNet} e información de las palabras adyacentes a las entidades señaladas.
+
+Otro recurso que ha probado ser útil, no solo en esta sino en otras múltiples tareas de NLP, es la atención. 
+En la tarea de extracción de relaciones se ha verificado que incluir niveles de atención sobre las palabras de la oración en función de las entidades señaladas, mejora la efectividad de los modelos, ya que ayuda a descartar información no relevante en la representación escogida~\cite{huang2016attention, wang2016relation, xiao2016semantic, lee2019semantic}.
+
+Recientemente, el modelo preentrenado BERT~\cite{BERT} ha tenido resultados satisfactorios en muchas tareas de NLP.
+En 2019, \textit{Soares et al}~\cite{soares2019matching} desarrollaron modelos basados en BERT para producir representaciones de relaciones en una oración. Entre tanto \textit{Wu y He}~\cite{wu2019enriching} propusieron un modelo para atacar el problema de la extracción de relaciones que combina información obtenida a partir de BERT con información extraída de las entidades señaladas.
+
 \section{Enfoque Conjunto}
 %===================================================================================
 
