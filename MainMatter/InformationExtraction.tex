@@ -9,5 +9,23 @@
 \section{Extracción de Relaciones}
 
 \section{Enfoque Conjunto}
+
+Comúnmente, las tareas de NER y ER son abordadas secuencialmente, con sistemas que extraen entidades y luego determinan qué relaciones existen entre las mismas.
+Sin embargo, sistemas secuenciales de este tipo son propensos a propagar el error de una tarea hacia la siguiente.
+Y, en dependencia de cómo estén implementados, puede que no exploten información relevante el uno del otro.
+Es por ello que existe toda una línea de desarrollo orientada a explorar soluciones que resuelvan simultáneamente estas dos tareas~\cite{miwa2016end, li2017neural, bekoulis2018adversarial, bekoulis2018joint, li2019entity, nguyen2019end, giorgi2019end}.
+
+La propuesta general se basa en definir una arquitectura que tenga salidas que le permitan resolver los dos problemas, similares a las descritas en secciones anteriores.
+Con la particularidad de que se define una función de pérdida que considere ambas tareas, permitiendo así optimizar el modelo en función de resolver ambos problemas.
+Además, algunas de las capas que codifican la información de entrada de estos modelos son compartidas en el cómputo de cada salida, permitiendo así el uso de información de una tarea en la resolución de la otra.
+
+Algunas de estas propuestas, al igual que otras ya descritas, se apoyan en recursos externos de NLP, como son los \textit{parsers} de dependencias~\cite{miwa2016end, li2017neural}.
+Esto, como se ha explicado, limita la efectividad de estos modelos en dominios donde dichas herramientas no funcionan como se esperaría~(e.g en dominios en los que no fueron entrenadas).
+
+En respuesta a esto, se han desarrollado propuestas puramente \textit{end-to-end}, que no se apoyan en estos recursos~\cite{bekoulis2018joint}.
+Este trabajo fue extendido con entrenamiento adversarial~\cite{bekoulis2018adversarial}.
+En 2019, \textit{Nguyen y Verspoor}~\cite{nguyen2019end} propusieron un modelo similar, que usa adicionalmente un mecanismo de \textit{biaffine attention}~\cite{biaffineattention}.
+\textit{Giorgi et al, 2019}~\cite{giorgi2019end} propusieron un modelo similar que incluye el uso del modelo preentrenado del lenguaje BERT, aliviando el costo de entrenamiento.
+Por su parte, \textit{Li et al, 2019}~\cite{li2019entity}, enfocaron el problema con \textit{multi-turn} question answering, mediante un modelo de QA basado en BERT que respondía preguntas cuyas respuestas eran las las entidades y relaciones entre las mismas.
 %===================================================================================
 
