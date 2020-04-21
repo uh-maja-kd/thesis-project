@@ -89,7 +89,7 @@ Muchos otros trabajos se registran en la literatura relativos a propuestas de al
 La propuesta más común se basa en algún tipo de algoritmo de programación dinámica con o sin desambiguación estadística.
 
 
-\section{Modelo}\label{sec:model}
+\section{Modelo de Aprendizaje Profundo}\label{sec:model}
 
 El modelo de aprendizaje profundo propuesto se apoya en el uso de RNN sobre estructuras derivadas del árbol de dependencias de la oración de entrada y las entidades señaladas, para obtener una representación de la supuesta relación existente entre ellas.
 
@@ -97,17 +97,50 @@ El modelo de aprendizaje profundo propuesto se apoya en el uso de RNN sobre estr
 
 Como fue explicado en el capítulo~\ref{chapter:information_extraction}, la información más completa para resolver el problema de la extracción de relaciones se encuentra en la oración completa. Sin embargo, se maneja por muchos autores la suposición de que el árbol de dependencias de la oración de entrada condensa la información vital para resolver el problema, a la vez que desecha otras fuentes de desinformación.
 
+El hecho de que las entidades entre las cuales se quiere determinar la existencia de una relación estén formadas por múltiples palabras, constituye un problema para la configuración de algoritmo de aprendizaje profundo.
+Es factible, en términos de implementación, concebir una configuración que permita establecer la existencia de relaciones entre dos palabras o \textit{tokens} de la oración.
+Pero si las entidades están formadas por múltiples palabras, un aspecto cardinal de la implementación consiste en definir qué palabra va a \textit{representar} a la entidad a la hora de determinar las relaciones en las que participa.
+Con este fin se han explorado diversos criterios en la literatura.
+Se debate el uso de la última palabra de la entidad en algunos casos; en otros, de la primera.
+De manera general, de acuerdo a observaciones realizadas sobre el conjunto de datos estudiado, las entidades señaladas constituyen unidades sintácticas coherentes; llegando a ser sintagmas nominales completos, en varios ejemplos.
+Como fue abordado, uno de los criterios que determina la existencia de una dependencia con una cabecera \textit{H} en una construcción sintáctica \textit{C}, es que \textit{H} puede sustituir sintácticamente a \textit{C}.
+Incluso, \textit{H} puede determinar semánticamente a \textit{C}.
+Por otro lado, las entidades formadas por múltiples palabras suelen ocurrir de manera total en un subárbol del árbol de dependencias, que tiene como raíz una de las palabras de la entidad.
+Este hecho fue explorado en el conjunto de datos estudiado, y se cumple en la amplia mayoría de los casos, exceptuándose muy pocos ejemplos.
+Dicho subárbol correspondiente a una entidad \textit{e} lo definimos como \textbf{subárbol relevante a \textit{e}}, y lo denotamos como $S_e$.
+A la raíz de dicho subárbol la denominamos \textbf{núcleo de la entidad $e$}, y se denota como $n_e$.
+
+Otra definición importante, citada repetidamente en la literatura para resolver este problema es el \textbf{camino en el árbol de dependencias} entre dos \textit{tokens} $t_1,t_2$.
+Esta definición es intuitiva, y denota a la secuencia de \textit{tokens} que ocurren en el camino que va desde $t_1$ hasta $t_2$.
+Dicho camino será denotado como $C(t_1,t_2)$.
+
+La figura \ref{fig:dep_tree_ex} ilustra las definiciones anteriores.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Graphics/dep_tree_ex.png}
+	\caption{Árbol de dependencias de la oración: \textbf{El cáncer de pulmón puede causar muerte prematura}. Se establece la relación \textbf{entails} entre las entidades \textbf{cáncer de pulmón}($e_1$) y \textbf{muerte}($e_2$). Aparecen señalados $S_{e_1}$, $S_{e_2}$, así como $C(n_{e_1}, n_{e_2})$}\label{fig:dep_tree_ex}
+\end{figure}
+
+En la selección del modelo propuesto se consideran dos hipótesis fundamentales a la hora de establecer la existencia de una relación entre dos entidades $e_1,e_2$, las cuales se comprobaron de manera experimental, como será descrito en el capítulo \ref{chapter:experiments}:
+
+\begin{enumerate}
+	\item $S_{e_1}$ y $S_{e_2}$ condensan información útil sobre las respectivas entidades, a la vez que deshechan fuentes de desinformación.
+	
+	\item $C(n_{e_1}, n_{e_2})$ condensa información útil para determinar una posible relación entre $e_1$ y $e_2$, a la vez que deshecha fuentes de desinformación.
+\end{enumerate}
+
 \subsection{Red Neuronal}
 
-Dada una oración de entrada, se utiliza un vector $w_i$ para representar la palabra $i-$'esima de la misma. Dicho vector se obtiene a partir de la concatenación de \textit{embeddings} de distintas fuentes de información:
+Dada una oración de entrada, se utiliza un vector $w_i$ para representar la palabra $i-$ésima de la misma. Dicho vector se obtiene a partir de la concatenación de \textit{embeddings} provenientes de distintas fuentes de información:
 
 \begin{description}
 	\item[Palabras:] Se utilizan \textit{embeddings} preentrenados en un corpus construido a partir de artículos de Wikipedia con contenido médico.
 	Fueron entrenados utilizado el algoritmo \textbf{word2vec}\cite{word2vec} con la arquitectura \textbf{skipgram}.
 	
-	\item[Caracteres:] Se utilizan \textit{embeddings} obtenidos mediante una capa BiLSTM sobre los caracteres de la palabra.
+	\item[Caracteres:] Se utilizan \textit{embeddings} obtenidos mediante una CNN sobre los caracteres de la palabra.
 	
-	\item[POST-tag y Dependencia:] Se utiliza la un \textit{embedding} de la etiqueta de POS-tag de la palabra y la dependencia de la misma con su ancestro en el árbol de dependencias de la oración.
+	\item[POST-tag y Dependencia:] Se utiliza un \textit{embedding} de la etiqueta de POS-tag de la palabra y la dependencia de la misma con su ancestro en el árbol de dependencias de la oración.
 	
 	\item[Etiqueta BMEWO-V y Tipo de la entidad:] Se añaden \textit{embeddings} con información relativa a la entidad a la que pertenece la palabra en cuestión.
 	En este caso la etiqueta correspondiente en el sistema BMEWO-V así como el tipo de la entidad.
@@ -119,18 +152,10 @@ Sean además, $p_1, p_2,\dots, p_k$ las posiciones de las palabras que se encuen
 Primeramente, una capa BiLSTM transforma la representación de cada palabra de la secuencia $W$, para incluir información contextual de las palabras anteriores y posteriores de cada posición:
 
 \begin{equation*}
-\overrightarrow{P} = LSTM(W)
+	P = BiLSTM(W)
 \end{equation*}
 
-\begin{equation*}
-\overleftarrow{P} = LSTM(W)
-\end{equation*}
-
-\begin{equation*}
-P = [\overrightarrow{P};\overleftarrow{P}]
-\end{equation*}
-
-Luego, la capa LSTM apilada re-enfatiza la direccionalidad de la relación procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la supuesta relación, y obtiene un vector $p$ que codifica toda la información contenida en el camino del árbol de dependencias.
+Luego, la capa LSTM apilada enfatiza la direccionalidad de la relación, procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la supuesta relación, y obtiene un vector $p$ que codifica toda la información contenida en el camino del árbol de dependencias.
 
 \begin{equation*}
 p = LSTM(P)
@@ -183,7 +208,7 @@ c_j = i_j \odot u_j + \sum_{k\in C(j)} f_{jk} \odot c_k
 h_j = o_j \odot tanh(c_j)
 \end{equation*}
 
-Nótese como la diferencia radica en que como se tienen varios momentos anteriores en el momento $t$, se considera en este caso la suma de sus estados ocultos.
+Nótese que la diferencia con respecto a las redes LSTM radica en que, como se tienen varios momentos inmediatos anteriores al momento $t$, se considera la suma de todos los respectivos estados ocultos.
 
 Loa vectores obtenidos a partir de la secuencia de entrada y las entidades señaladas se concatenan para formar la representación de la hipotética relación.
 
@@ -210,5 +235,7 @@ La figura \ref{fig:rel_model} ilustra la arquitectura descrita.
 	\includegraphics[width=1\linewidth]{Graphics/rel_model_class.jpg}
 	\caption{Arquitectura de red utilizada. La oración de entrada es \textit{El cáncer de pulmón puede causar muerte prematura} Y las entidades en cuestión son \textit{cáncer de pulmón} y \textit{muerte}.}\label{fig:rel_model}
 \end{figure}
+
+\section{Entrenamiento}
 
 %===================================================================================
