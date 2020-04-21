@@ -117,17 +117,17 @@ En la selección del modelo propuesto se consideran dos hipótesis fundamentales
 	\item $C(n_{e_1}, n_{e_2})$ condensa información útil para determinar una posible relación entre $e_1$ y $e_2$, a la vez que deshecha fuentes de desinformación.
 \end{enumerate}
 
-\subsection{Preprocesamiento}
-
-En este trabajo se utilza en \textit{parser} de dependencias de la biblioteca \textbf{spaCy}\cite{spacy2}
 
 \subsection{Red Neuronal}
 
-Dada una oración de entrada, se utiliza un vector $w_i$ para representar la palabra $i-$ésima de la misma. Dicho vector se obtiene a partir de la concatenación de \textit{embeddings} provenientes de distintas fuentes de información:
+La configuración de red definida, pretende determinar la existencia de una relación entre las entidades $e_1$ y $e_2$ en el contexto de una oración dada. Para ello codifica la información contenida en los subárboles relevantes a $e_1$ y $e_2$~(denotados $S_{e_1}$ y $S_{e_2}$, respectivamente), así como en el camino en el árbol de dependencias entre los núcleos de $e_1$ y de $e_2$~(denotado $C(n_{e_1}, n_{e_2})$).
+
+Tanto $S_{e_1}$, $S_{e_2}$ como $C(n_{e_1}, n_{e_2})$, son estructuras formadas por palabras de la oración de entrada. Para representar las palabras de la oración en cada una de estas estructuras, se utiliza un vector que se obtiene a partir de la concatenación de \textit{embeddings} provenientes de distintas fuentes de información:
 
 \begin{description}
-	\item[Palabras:] Se utilizan \textit{embeddings} preentrenados en un corpus construido a partir de artículos de Wikipedia con contenido médico.
-	Fueron entrenados utilizado el algoritmo \textbf{word2vec}\cite{word2vec} con la arquitectura \textbf{skipgram}.
+	\item[\textit{Embedding} Contextual:] Se utilizan \textit{embeddings} contextuales preentrenados, obtenidos a partir del modelo BERT.
+	
+	\item[\textit{Embedding} de Palabras:] Se utilizan \textit{embeddings} preentrenados en un corpus construido a partir de artículos de Wikipedia con contenido médico.
 	
 	\item[Caracteres:] Se utilizan \textit{embeddings} obtenidos mediante una CNN sobre los caracteres de la palabra.
 	
@@ -138,35 +138,38 @@ Dada una oración de entrada, se utiliza un vector $w_i$ para representar la pal
 	
 \end{description}
 
-Sean además, $p_1, p_2,\dots, p_k$ las posiciones de las palabras que se encuentran en el camino en el árbol de dependencias entre las dos entidades señaladas, siendo $e_1,e_2$ dichas entidades, respectivamente. Sea $W = [w_{e_1};w_{p_1};\dots;w_{p_k};w_{e_2}]$ la concatenación de los vectores en dichas posiciones. Nótese que $W$ tiene dimensión $(k+2) \times q$, siendo $q$ la cantidad de componentes de los vectores $w_i$.
+Para la obtención de los \textit{embedding} contextuales se utilizó el modelo preentrenado \textbf{tal y poner cita}.
+Los \textit{embedding} de palabras fueron entrenados utilizado el algoritmo \textbf{word2vec}\cite{word2vec} con la arquitectura \textbf{skipgram}.
+Las etiquetas de POS-tag así como el árbol de dependecias fueron obtenidos utilizando la biblioteca \textbf{spaCy}\cite{spacy2}.
+En el caso de las etiquetas BMEWO-V y los tipos de las entidades se obtienen a partir de las salidas del modelo de extracción de entidades descrito en el capítulo \ref{chapter:entities}.
 
-Primeramente, una capa BiLSTM transforma la representación de cada palabra de la secuencia $W$, para incluir información contextual de las palabras anteriores y posteriores de cada posición:
+A partir de las estructuras $S_{e_1}$, $S_{e_2}$ y $C(n_{e_1}, n_{e_2})$, se obtiene una representación de la oración y las entidades señaladas.
+Una capa BiLSTM transforma la representación de cada palabra de la secuencia $C(n_{e_1}, n_{e_2})$, para incluir información contextual de las palabras anteriores y posteriores de cada posición.
 
 \begin{equation*}
-	P = BiLSTM(W)
+	P = BiLSTM(C(n_{e_1}, n_{e_2}))
 \end{equation*}
 
-Luego, la capa LSTM apilada enfatiza la direccionalidad de la relación, procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la supuesta relación, y obtiene un vector $p$ que codifica toda la información contenida en el camino del árbol de dependencias.
+Luego, la capa LSTM apilada enfatiza la direccionalidad de la supuesta relación, procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la misma, y obtiene un vector $p$ que codifica la información contenida en $C(n_{e_1}, n_{e_2})$.
 
 \begin{equation*}
 p = LSTM(P)
 \end{equation*}
 
-Entre tanto, una capa recurrente se aplica sobre el subárbol que tiene como raíz a cada una de las entidades señaladas.
-En este caso se utiliza una red Tree-LSTM, en su variante $Child Sum$ \cite{treeLSTM}.
-Siendo $T_{e_1}$ y $T_{e_2}$ dichos subárboles:
+Entre tanto, una capa recurrente se aplica sobre $S_{e_1}$ y $S_{e_2}$ de manera independiente~\footnote{Las representaciones de $S_{e_1}$ y $S_{e_2}$ se obtienen de manera independiente, pero utilizando el mismo conjunto de parámetros.}.
+En este caso se utiliza una red Tree-LSTM, en su variante $Child Sum$~\cite{treeLSTM}.
 
 \begin{equation*}
-	t_{e_1} = TreeLSTM(T_{e_1})
+	t_{e_1} = TreeLSTM(S_{e_1})
 \end{equation*}
 
 
 \begin{equation*}
-	t_{e_2} = TreeLSTM(T_{e_2})
+	t_{e_2} = TreeLSTM(S_{e_2})
 \end{equation*}
 
 
-Una red Tree-LSTM es una generalización de una red LSTM, que permite procesar de manera recurrente estructuras de vectores que se organicen en forma de grafos dirigidos y acíclicos~(como los árboles, por ejemplo). 
+Una red Tree-LSTM es una generalización de una red LSTM, que permite procesar de manera recurrente estructuras de vectores que se organicen en forma de grafos dirigidos y acíclicos~(como los árboles, por ejemplo).
 
 Una celda Tree-LSTM en el momento $t$, al igual que su homólogo lineal, se define como una colección de vectores en $\mathbb{R}^d$, siendo $d$ la dimensión oculta de dicha celda.
 Estos vectores son: una compuerta de entrada $i_t$, una compuerta de olvido $f_t$, una compuerta de salida $o_t$, una celda de memoria $c_t$ y un estado oculto $h_t$. Siendo $C(j)$ la secuencia de hijos de el nodo $j$, las ecuaciones de transición de una celda Tree-LSTM se muestran a continuación:
@@ -199,7 +202,13 @@ c_j = i_j \odot u_j + \sum_{k\in C(j)} f_{jk} \odot c_k
 h_j = o_j \odot tanh(c_j)
 \end{equation*}
 
-Nótese que la diferencia con respecto a las redes LSTM radica en que, como se tienen varios momentos inmediatos anteriores al momento $t$, se considera la suma de todos los respectivos estados ocultos.
+Nótese que la diferencia con respecto a las redes LSTM radica en que, como se tienen varios momentos inmediatos anteriores al momento $t$, se considera la suma de todos los respectivos estados ocultos. La figura \ref{fig:lstm_cmp} ilustra las diferencias entre ambas.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Graphics/lstm_cmp.png}
+	\caption{\textbf{Arriba}: LSTM tradicional o de cadena. \textbf{Abajo}: Tree-LSTM~\cite{treeLSTM}.}\label{fig:lstm_cmp}
+\end{figure}
 
 Loa vectores obtenidos a partir de la secuencia de entrada y las entidades señaladas se concatenan para formar la representación de la hipotética relación.
 
@@ -207,15 +216,15 @@ Loa vectores obtenidos a partir de la secuencia de entrada y las entidades seña
 	r = [t_{e_1};t_{e_2}, p]
 \end{equation*}
 
-La salida $o$ se obtiene a partir de aplicar la función sigmoide a una transformación linear de dicho vector.
+La salida $x$ se obtiene a partir de aplicar la función sigmoide a una transformación linear de dicho vector.
 
 \begin{equation*}
-	o = \sigma(W^{(o)}r + b^{(o)})
+	x = \sigma(W^{(x)}r + b^{(x)})
 \end{equation*}
 
-La matriz $W^{(o)}$ tiene dimensiones $m \times l$, donde $l = |t_{e_1}| + |t_{e_2}| + |p|$ y $m$ es el número de relaciones semánticas diferentes que se definen.
+La matriz $W^{(x)}$ tiene dimensiones $m \times l$, donde $l = |t_{e_1}| + |t_{e_2}| + |p|$ y $m$ es el número de relaciones semánticas diferentes que se definen.
 
-De acuerdo al vector de salida $o$, se predice la existencia de una relación si su valor máximo excede un umbral prefijado que se introduce como un hiperparámetro adicional. De ser así, se predice la existencia solamente de la relación dada por $\arg\max(o)$.
+De acuerdo al vector de salida $x$, se predice la existencia de una relación si su valor máximo excede un umbral prefijado que se introduce como un hiperparámetro adicional. De ser así, se predice la existencia solamente de la relación dada por $\arg\max(x)$.
 	
 Nótese como, a diferencia de las arquitecturas tradicionales, esta configuración permite prescindir de la relación ficticia \textit{none}.
 
@@ -224,9 +233,21 @@ La figura \ref{fig:rel_model} ilustra la arquitectura descrita.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\linewidth]{Graphics/rel_model_class.jpg}
-	\caption{Arquitectura de red utilizada. La oración de entrada es \textit{El cáncer de pulmón puede causar muerte prematura} Y las entidades en cuestión son \textit{cáncer de pulmón} y \textit{muerte}.}\label{fig:rel_model}
+	\caption{Arquitectura de red utilizada. La oración de entrada es \textbf{El cáncer de pulmón puede causar muerte prematura} Y las entidades en cuestión son \textbf{cáncer de pulmón} y \textbf{muerte}.}\label{fig:rel_model}
 \end{figure}
 
 \section{Entrenamiento}
+
+Debido a que la salida correspondiente a cada relación es independiente de las otras, el modelo se entrena para minimizar una función de entropía binaria.
+Siendo $k$ el número de relaciones definidas, la función de pérdida entre la salida del modelo $x$ y un vector binario $y$ objetivo, se define como:
+
+\begin{equation*}
+	\ell(x, y) = \frac{1}{k}\sum_{1\leq i\leq k}{\left[ y_i \cdot \log x_i + (1 - y_i) \cdot \log (1 - x_i) \right]}
+\end{equation*}
+
+Como fue explicado, la salida del modelo no expresa directamente la existencia de una relación ficticia que contemple el caso de la no existencia de relación entre el par de entidades de entrada.
+Para que el modelo sea capaz de reconocer estos casos, se introduce una estrategia de muestreo negativo durante el entrenamiento, donde el vector objetivo es el vector nulo.
+Dicho muestreo no se realiza utilizando como entrada pares de palabras aleatorios, sino núcleos de entidades existentes en la oración entre las cuales no existe una relación.
+En el capítulo \ref{chapter:experiments} se describirán experimentos realizados con distintas estrategias de muestreo negativo utilizadas.
 
 %===================================================================================
