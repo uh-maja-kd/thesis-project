@@ -76,19 +76,6 @@ Existen varias restricciones adicionales que se definen sobre estas estructuras 
 Una de las más conocidas es la restricción de \textbf{proyectividad}~\cite{hays1964dependency,lecerf1960programme,marcus1965notion}.
 Un grafo de dependencias satisface la restricción de proyectividad con respecto a un orden linear particular de los nodos si, por cada arco $h \rightarrow d$ y un nodo $w$, $w$ ocurre entre $h$ y $d$ en el orden lineal solo si $w$ está \textbf{dominado} por $h$~\footnote{La relación \textbf{dominar} es la clausura reflexiva y transitiva de la relación de dependencia definida por los arcos}. 
 
-\subsection{Algoritmos para el análisis de dependencias}
-
-Con basamento en estructuras de dependencias, disímiles algoritmos han sido propuestos para analizar el lenguaje natural.
-De manera general pueden distinguirse dos enfoques diferentes que se han adoptado en la literatura: análisis orientado a gramáticas y análisis orientado a datos. 
-
-Los trabajos pioneros en el análisis orientado a gramáticas se remontan a las propuestas de \textit{Hays} y \textit{Gaifman}, cuando en 1964 y 1965 respectivamente~\cite{hays1964dependency,gaifman1965dependency}, definieron un conjunto de reglas sobre las gramáticas de dependencias y un conjunto de condiciones que debían cumplir las relaciones de dependencia.
-Por su parte, los primeros intentos en realizar análisis de dependencias orientado a datos por \textit{Carroll y Charniak} en 1992~\cite{carroll1992two}, pueden considerarse también orientados a gramáticas en el sentido de que apoyaron en el formalismo de una gramática de dependencias y usaron un \emph{corpus} de datos para inducir un modelo probabilístico para la desambiguación.
-En esencia, usaron una Gramática Libre del Contexto Probabilística~\cite{chomsky1956three}, que estaba restringida para ser equivalente al tipo de gramáticas de \textit{Hays} y \textit{Gaifman}. 
-
-Muchos otros trabajos se registran en la literatura relativos a propuestas de algoritmos para el análisis de dependencias~\cite{koo2008simple,mcdonald2005non,nivre2003efficient,nivre2007maltparser,socher2011parsing}.
-La propuesta más común se basa en algún tipo de algoritmo de programación dinámica con o sin desambiguación estadística.
-
-
 \section{Modelo de Aprendizaje Profundo}\label{sec:model}
 
 El modelo de aprendizaje profundo propuesto se apoya en el uso de RNN sobre estructuras derivadas del árbol de dependencias de la oración de entrada y las entidades señaladas, para obtener una representación de la supuesta relación existente entre ellas.
@@ -119,7 +106,7 @@ La figura \ref{fig:dep_tree_ex} ilustra las definiciones anteriores.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Graphics/dep_tree_ex.png}
-	\caption{Árbol de dependencias de la oración: \textbf{El cáncer de pulmón puede causar muerte prematura}. Se establece la relación \textbf{entails} entre las entidades \textbf{cáncer de pulmón}($e_1$) y \textbf{muerte}($e_2$). Aparecen señalados $S_{e_1}$, $S_{e_2}$, así como $C(n_{e_1}, n_{e_2})$}\label{fig:dep_tree_ex}
+	\caption{Árbol de dependencias de la oración: \textbf{El cáncer de pulmón puede causar muerte prematura}. Se establece la relación \textbf{entails} entre las entidades \textbf{cáncer de pulmón}($e_1$) y \textbf{muerte}($e_2$). Aparecen señalados $S_{e_1}$, $S_{e_2}$, así como $C(n_{e_1}, n_{e_2})$.}\label{fig:dep_tree_ex}
 \end{figure}
 
 En la selección del modelo propuesto se consideran dos hipótesis fundamentales a la hora de establecer la existencia de una relación entre dos entidades $e_1,e_2$, las cuales se comprobaron de manera experimental, como será descrito en el capítulo \ref{chapter:experiments}:
@@ -129,6 +116,10 @@ En la selección del modelo propuesto se consideran dos hipótesis fundamentales
 	
 	\item $C(n_{e_1}, n_{e_2})$ condensa información útil para determinar una posible relación entre $e_1$ y $e_2$, a la vez que deshecha fuentes de desinformación.
 \end{enumerate}
+
+\subsection{Preprocesamiento}
+
+En este trabajo se utilza en \textit{parser} de dependencias de la biblioteca \textbf{spaCy}\cite{spacy2}
 
 \subsection{Red Neuronal}
 
