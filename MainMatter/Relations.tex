@@ -6,16 +6,15 @@
 
 En este capítulo se hace una descripción de las técnicas empleadas para la resolución de la tarea de Extracción de Relaciones.
 Primeramente, se recoge un resumen del análisis de dependencias de una oración, aspecto cardinal en la propuesta realizada.
-Luego se describe el modelo de aprendizaje profundo propuesto, sus componentes y sus distintas variantes.
+Luego se describe el modelo de aprendizaje profundo propuesto y sus componentes.
 
 
 \section{Análisis de Dependencias}\label{sec:parsing}
 
-El conocimiento de la estructura y la sintáxis que subyace en un texto en lenguaje natural puede ser de mucha ayuda en tareas típicas de NLP como la clasificación de texto, la sumarización o la extracción de relaciones.
+El conocimiento de la estructura y la sintaxis que subyace en un texto en lenguaje natural puede ser de mucha ayuda en tareas típicas de NLP, incluyendo la Extracción de Relaciones.
 Una de las técnicas más comunes para capturar cierta estructura en las oraciones es el análisis sintáctico~(conocido comúnmente por su nombre en inglés: \emph{parsing}).
-En esta sección se abordará este tema, particularmente el análisis de dependencias.
 
-Hay dos formas de describir la estructura de una oración en lenguaje natural: separando la oración en \textbf{constituyentes}~(frases), que se separan a su vez en constituyentes más pequeños; o estableciendo conexiones entre las palabras individuales~\cite{covington2001fundamental}.
+Se han descrito dos formas esenciales de explicar la estructura de una oración en lenguaje natural: separando la oración en \textbf{constituyentes}~(frases), que se separan a su vez en constituyentes más pequeños; o estableciendo conexiones entre las palabras individuales~\cite{covington2001fundamental}.
 El significado de estas dos variantes se ilustra en las figuras \ref{fig:dep_const} y \ref{fig:dep_links} respectivamente.
 
 \begin{figure}[h!]
@@ -57,8 +56,8 @@ No existe en la literatura una noción coherente de dependencia que se correspon
 
 \subsection{Grafo de dependencias}
 
-Si se considera cada dependencia como un arco dirigido que tiene como origen a la cabecera y como destino al dependiente, la estructura de dependecias de la oración conforma un grafo dirigido $G$ cuyos nodos son los elementos léxicos del lenguaje~(\emph{tokens}).
-Además, el grafo subyacente de $G$ debe estar conectado, para que cada nodo esté relacionado con, al menos, otro nodo.
+Si se considera cada dependencia como un arco dirigido que tiene como origen a la cabecera y como destino al dependiente, la estructura de dependencias de la oración conforma un grafo dirigido $G$ cuyos nodos son los elementos léxicos del lenguaje~(\emph{tokens}).
+Además, el grafo subyacente de $G$ debe ser conexo, para que cada nodo esté relacionado con, al menos, otro nodo.
 
 A esta caracterización se le imponen usualmente más restricciones.
 Dos de las más utilizadas en las distintas formalizaciones de gramáticas basadas en dependencias~(o simplemente, gramáticas de dependencias), son: la suposición de que cada nodo del grafo tiene \emph{indegree} $\leq 1$; y la no existencia de ciclos.
@@ -78,17 +77,18 @@ Un grafo de dependencias satisface la restricción de proyectividad con respecto
 
 \section{Modelo de Aprendizaje Profundo}\label{sec:model}
 
-El modelo de aprendizaje profundo propuesto se apoya en el uso de RNN sobre estructuras derivadas del árbol de dependencias de la oración de entrada y las entidades señaladas, para obtener una representación de la supuesta relación existente entre ellas.
+El modelo de aprendizaje profundo propuesto se apoya en el uso de redes neuronales recurrentes sobre estructuras derivadas del árbol de dependencias de la oración de entrada y las entidades señaladas, para obtener una representación de la hipotética relación existente entre ellas.
 
 \subsection{Hipótesis del Camino en el Árbol de Dependencias}
 
-Como fue explicado en el capítulo~\ref{chapter:information_extraction}, la información más completa para resolver el problema de la extracción de relaciones se encuentra en la oración completa. Sin embargo, se maneja por muchos autores la suposición de que el árbol de dependencias de la oración de entrada condensa la información vital para resolver el problema, a la vez que desecha otras fuentes de desinformación.
+Como fue explicado en el capítulo~\ref{chapter:information_extraction}, la información más completa para resolver el problema de la Extracción de Relaciones se encuentra en la oración íntegra. Sin embargo, se maneja por muchos autores la suposición de que el árbol de dependencias de la oración de entrada condensa la información vital, a la vez que desecha otras fuentes de desinformación.
 
 El hecho de que las entidades entre las cuales se quiere determinar la existencia de una relación estén formadas por múltiples palabras, constituye un problema para la configuración de algoritmo de aprendizaje profundo.
 Es factible, en términos de implementación, concebir una configuración que permita establecer la existencia de relaciones entre dos palabras o \textit{tokens} de la oración.
 Pero si las entidades están formadas por múltiples palabras, un aspecto cardinal de la implementación consiste en definir qué palabra va a \textit{representar} a la entidad a la hora de determinar las relaciones en las que participa.
 Con este fin se han explorado diversos criterios en la literatura.
 Se debate el uso de la última palabra de la entidad en algunos casos; en otros, de la primera.
+
 De manera general, de acuerdo a observaciones realizadas sobre el conjunto de datos estudiado, las entidades señaladas constituyen unidades sintácticas coherentes; llegando a ser sintagmas nominales completos, en varios ejemplos.
 Como fue abordado, uno de los criterios que determina la existencia de una dependencia con una cabecera \textit{H} en una construcción sintáctica \textit{C}, es que \textit{H} puede sustituir sintácticamente a \textit{C}.
 Incluso, \textit{H} puede determinar semánticamente a \textit{C}.
@@ -109,7 +109,7 @@ La figura \ref{fig:dep_tree_ex} ilustra las definiciones anteriores.
 	\caption{Árbol de dependencias de la oración: \textbf{El cáncer de pulmón puede causar muerte prematura}. Se establece la relación \textbf{entails} entre las entidades \textbf{cáncer de pulmón}($e_1$) y \textbf{muerte}($e_2$). Aparecen señalados $S_{e_1}$, $S_{e_2}$, así como $C(n_{e_1}, n_{e_2})$.}\label{fig:dep_tree_ex}
 \end{figure}
 
-En la selección del modelo propuesto se consideran dos hipótesis fundamentales a la hora de establecer la existencia de una relación entre dos entidades $e_1,e_2$, las cuales se comprobaron de manera experimental, como será descrito en el capítulo \ref{chapter:experiments}:
+En la selección del modelo propuesto se consideran dos hipótesis fundamentales a la hora de establecer la existencia de una relación entre el par de entidades $\langle e_1,e_2 \rangle$, las cuales se comprobaron de manera experimental, como será descrito en el capítulo \ref{chapter:experiments}:
 
 \begin{enumerate}
 	\item $S_{e_1}$ y $S_{e_2}$ condensan información útil sobre las respectivas entidades, a la vez que deshechan fuentes de desinformación.
@@ -138,26 +138,26 @@ Tanto $S_{e_1}$, $S_{e_2}$ como $C(n_{e_1}, n_{e_2})$, son estructuras formadas 
 	
 \end{description}
 
-Para la obtención de los \textit{embedding} contextuales se utilizó el modelo preentrenado \textbf{tal y poner cita}.
-Los \textit{embedding} de palabras fueron entrenados utilizado el algoritmo \textbf{word2vec}\cite{word2vec} con la arquitectura \textbf{skipgram}.
-Las etiquetas de POS-tag así como el árbol de dependecias fueron obtenidos utilizando la biblioteca \textbf{spaCy}\cite{spacy2}.
+Para la obtención de los \textit{embedding} contextuales se utilizó una variente del modelo BERT~\cite{devlin2018bert}, en este caso: \textbf{bert-base-multilingual-uncased}, a través de la interfaz que brinda la biblioteca \textbf{pytorch-pretrained-bert}~\footnote{https://pypi.org/project/pytorch-pretrained-bert/}.
+Los \textit{embeddings} de palabras fueron entrenados utilizado el algoritmo \textbf{word2vec}~\cite{mikolov2013efficient} con la arquitectura \textbf{skipgram}, utilizando la interfaz de la biblioteca \textbf{gensim}~\footnote{https://pypi.org/project/gensim/}.
+Las etiquetas de POS-tag así como el árbol de dependencias fueron obtenidos utilizando la biblioteca \textbf{spaCy}~\footnote{https://spacy.io/}.
 En el caso de las etiquetas BMEWO-V y los tipos de las entidades se obtienen a partir de las salidas del modelo de extracción de entidades descrito en el capítulo \ref{chapter:entities}.
 
-A partir de las estructuras $S_{e_1}$, $S_{e_2}$ y $C(n_{e_1}, n_{e_2})$, se obtiene una representación de la oración y las entidades señaladas.
-Una capa BiLSTM transforma la representación de cada palabra de la secuencia $C(n_{e_1}, n_{e_2})$, para incluir información contextual de las palabras anteriores y posteriores de cada posición.
+A partir de esta representación distruibuida de las estructuras $S_{e_1}$, $S_{e_2}$ y $C(n_{e_1}, n_{e_2})$, se obtiene una representación de la oración y las entidades señaladas.
+Primeramente, una capa BiLSTM transforma la representación de cada palabra de la secuencia $C(n_{e_1}, n_{e_2})$, para incluir información contextual de las palabras anteriores y posteriores de cada posición.
 
 \begin{equation*}
 	P = BiLSTM(C(n_{e_1}, n_{e_2}))
 \end{equation*}
 
-Luego, la capa LSTM apilada enfatiza la direccionalidad de la supuesta relación, procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la misma, y obtiene un vector $p$ que codifica la información contenida en $C(n_{e_1}, n_{e_2})$.
+Luego, la capa LSTM apilada enfatiza la direccionalidad de la relación, procesando la secuencia $P$ solamente en el sentido que va desde el origen hacia el destino de la misma, y obtiene un vector $p$ que codifica la información contenida en $C(n_{e_1}, n_{e_2})$.
 
 \begin{equation*}
-p = LSTM(P)
+	p = LSTM(P)
 \end{equation*}
 
 Entre tanto, una capa recurrente se aplica sobre $S_{e_1}$ y $S_{e_2}$ de manera independiente~\footnote{Las representaciones de $S_{e_1}$ y $S_{e_2}$ se obtienen de manera independiente, pero utilizando el mismo conjunto de parámetros.}.
-En este caso se utiliza una red Tree-LSTM, en su variante $Child Sum$~\cite{treeLSTM}.
+En este caso se utiliza una red Tree-LSTM, en su variante \textit{Child Sum}~\cite{tai2015improved}.
 
 \begin{equation*}
 	t_{e_1} = TreeLSTM(S_{e_1})
@@ -207,13 +207,13 @@ Nótese que la diferencia con respecto a las redes LSTM radica en que, como se t
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Graphics/lstm_cmp.png}
-	\caption{\textbf{Arriba}: LSTM tradicional o de cadena. \textbf{Abajo}: Tree-LSTM~\cite{treeLSTM}.}\label{fig:lstm_cmp}
+	\caption{\textbf{Arriba}: LSTM tradicional o de cadena. \textbf{Abajo}: Tree-LSTM~\cite{tai2015improved}.}\label{fig:lstm_cmp}
 \end{figure}
 
 Loa vectores obtenidos a partir de la secuencia de entrada y las entidades señaladas se concatenan para formar la representación de la hipotética relación.
 
 \begin{equation*}
-	r = [t_{e_1};t_{e_2}, p]
+	r = [t_{e_1}; t_{e_2}; p]
 \end{equation*}
 
 La salida $x$ se obtiene a partir de aplicar la función sigmoide a una transformación linear de dicho vector.
@@ -222,11 +222,11 @@ La salida $x$ se obtiene a partir de aplicar la función sigmoide a una transfor
 	x = \sigma(W^{(x)}r + b^{(x)})
 \end{equation*}
 
-La matriz $W^{(x)}$ tiene dimensiones $m \times l$, donde $l = |t_{e_1}| + |t_{e_2}| + |p|$ y $m$ es el número de relaciones semánticas diferentes que se definen.
+La matriz $W^{(x)}$ tiene dimensiones $k \times l$, donde $l = |t_{e_1}| + |t_{e_2}| + |p|$ y $k$ es el número de relaciones semánticas diferentes que se definen.
 
-De acuerdo al vector de salida $x$, se predice la existencia de una relación si su valor máximo excede un umbral prefijado que se introduce como un hiperparámetro adicional. De ser así, se predice la existencia solamente de la relación dada por $\arg\max(x)$.
+De acuerdo al vector de salida $x$, se predice la existencia de una relación si su valor máximo excede un umbral prefijado que se introduce como un hiperparámetro adicional. De ser así, se predice la existencia solamente de la relación dada por $argmax(x)$.
 	
-Nótese como, a diferencia de las arquitecturas tradicionales, esta configuración permite prescindir de la relación ficticia \textit{none}.
+Nótese como, a diferencia de las arquitecturas típicas, esta configuración permite prescindir de la relación ficticia \textit{none}.
 
 La figura \ref{fig:rel_model} ilustra la arquitectura descrita.
 
