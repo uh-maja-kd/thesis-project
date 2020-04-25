@@ -4,7 +4,55 @@
 \chapter{Análisis Experimental}\label{chapter:experiments}
 \addcontentsline{toc}{chapter}{Análisis Experimental}
 
+Este capítulo se centra en la descripción del los detalles de la implementación de las propuestas descritas para la extracción de entidades y relaciones.
+Se explican las configuraciones de los exprimentos realizados y el conjunto de técnicas experimentales empleadas, se muestran los resultados de dicho estudio y se someten los mismo a una posterior discusión.
+
+La implementación de las propuestas se realizó utilizando el lenguaje de programación Python.
+Se utilizó la biblioteca \textbf{PyTorch} como marco para el trabajo con redes neuronales profundas.
+Para entrenar los modelos y llevar a cabo los distintos exprimentos se utilizaron los conjuntos de datos correspondientes a los eventos eHealth-KD en sus ediciones del 2019~\footnote{repo github} y 2020~\footnote{repo github}~\footnote{Se especificará adecuadamente que datos fueron utilizados en cada uno de los experimentos}.
+
 \section{Marco Experimental}
+
+Los algoritmos definidos para la resolución de ambas tareas, están basados en técnicas de aprendizaje profundo.
+Una de las implicaciones de esta decisión, es que una vez fijo el algoritmo, existe una amplia variedad de hiperparámetros que se pueden ajustar en virtud de obtener mejores resultados computacionales.
+Los experimentos realizados toman como referencia la configuración de hiperparámetros que mejores resultados alcanzó.
+
+Para la evaluación definitiva de las propuestas se utilizaron métricas de tipo F1, que fueron definidas para la evaluación de las propuestas en la competencia eHealth-KD 2019~\cite{ehalth19}.
+La precisión y el recobrado se definen en términos de \textit{Correct}(\textbf{C}), \textit{Missing}(\textbf{M}), \textit{Spurious}(\textbf{S}), \textit{Incorrect}(\textbf{I}) y \textit{Partial}\textbf{(P)}.
+
+Una entidad es clasificada como \textit{Correct}, si coincide con alguna de las entidades de la oración en cuanto a las palabras que contiene y la etiqueta asignada a la misma.
+Si las palabras coinciden pero la etiqueta no es correcta se clasifica como \textit{Incorrect}.
+Si existe un solapamiento entre una entidad extraída y una presente en la oración con la misma etiqueta, cuenta como una ocurrencia \textit{Partial}.
+Si en una entidad extraída no ocurre ninguno de los casos anteriores se considera \textit{Spurious}.
+Por su parte, una entidad presente en la oración y no detectada por el modelo se considera \textit{Missing}.
+
+:as relaciones solo se clasifican en términos de \textit{Correct}, \textit{Spurious} y \textit{Missing}, teniendo en cuenta las entidades que enlaza y la etiqueta asignada a la misma.
+
+La fórmula \ref{equation:f1_formula} define la métrica F1 utilizada.
+Los subíndices $A$ y $B$ identifican a las tareas de extracción de entidades y relaciones, respectivamente.
+
+\begin{equation*}
+R_{sc1} = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + M_A + C_B + M_B}
+\end{equation*}
+
+\begin{equation*}
+P_{sc1} = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + S_A + C_B + S_B}
+\end{equation*}
+
+\begin{equation}
+F1_{sc1} = 2\frac{P_{sc1}R_{sc1}}{P_{sc1}+R_{sc1}}
+\end{equation}\label{equation:f1_formula}
+
+Los escenarios 2 y 3 se evaluaron de manera equivalente utilizando las fórmulas correspondientes.
+
+Se recogen en este estudio distintas configuraciones de hiperparámetros exploradas, así como detalles del proceso de entrenamiento de las propuestas con mejores resultados.
+Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad el tamaño del conjunto de datos utilizado.
+Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
+
+En el caso del modelo para la extracción de relaciones, se evaluó adicionalmente las hipótesis sobre el árbol de dependencias.
+Para ello se entrenó un modelo con una complejidad semejante en términos de parámetros.
+Se sustiuyó el camino en el árbol de dependencias por la secuencia de palabras de la oración completa, y se cambió el procesamiento mediante Tree-LSTM del subárbol relevante a las entidades, por una codificación basada en BiLSTM de las palabras que forman parte de las mismas.
+
 
 \section{Resultados Computacionales}
 
