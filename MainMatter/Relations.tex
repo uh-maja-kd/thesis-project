@@ -5,8 +5,34 @@
 \addcontentsline{toc}{chapter}{Extracción de Relaciones}
 
 En este capítulo se hace una descripción de las técnicas empleadas para la resolución de la tarea de Extracción de Relaciones.
-Primeramente, se recoge un resumen del análisis de dependencias de una oración, aspecto cardinal en la propuesta realizada.
-Luego se describe el modelo de aprendizaje profundo propuesto y sus componentes.
+Primeramente se describe de manera general los pasos que sigue la propuesta.
+Luego, se recoge un resumen del análisis de dependencias de una oración, aspecto cardinal del procedimiento.
+Finalemente, se describe el modelo de aprendizaje profundo utilizado, sus componentes y la metodología seguida para su entrenamiento.
+
+\section{Descripción General de la Propuesta}
+
+Como fue explicado en el capítulo \ref{chapter:information_extraction}, la entrada definida para la tarea de Extracción de Relaciones consiste en una oración en texto plano, junto a un par~(generalmente ordenado) de entidades presentes en dicha oración.
+La salida es una entre un conjunto de relaciones semánticas predefinidas.
+Debe existir además un mecanismo para identificar la ausencia de relación alguna entre las entidades en cuestión.
+La metodología seguida en esta investigación es ligeramente diferente pues busca, a partir de una oración y el conjunto de entidades presentes en la misma, obtener todas las relaciones semánticas que se establecen entre pares de estos conceptos.
+
+La propuesta divide el proceso en cuatro etapas:
+
+\begin{description}
+	
+	\item[Preprocesamiento:] Este proceso se lleva a cabo con el objetivo de convertir la representación en texto plano de la oración, en estructuras que aportan información útil para etapas posteriores.
+	Esto incluye: separación en \textit{tokens}, extracción de rasgos sintácticos y análisis de dependencias.
+	
+	\item[Obtención de estructuras de dependencias:] A partir de los \textit{tokens} generados en el paso anterior y el análisis de dependencias, se construyen las estructuras en las que se apoya posteriormente la red neuronal, y que están descritas detalladamente en la subsección \ref{subsec:dep_tree_hip}.
+	
+	\item[Red Neuronal] Una red neuronal profunda, a partir de la información asociada a un par de entidades, produce un vector que en cada componente contiene un valor que mide cuán intensa es la presencia de la relación correspondiente a dicha componente, entre las dos entidades señaldas.
+	
+	\item[Posprocesamiento] A partir del vector producido por la red neuronal, se reporta la presencia de una relación si el valor de alguna de las componentes supera un umbral determinado.
+	De no hacerlo, se considera que no existe relación entre las entidades señaladas.
+	
+\end{description}
+
+En un escenario evaluativo~(o desempeñándose en un escenario real), las dos últimas etapas se ejecutan una vez por cada par ordenado de entidades presentes en la oración de entrada.
 
 
 \section{Análisis de Dependencias}\label{sec:parsing}
@@ -79,7 +105,7 @@ Un grafo de dependencias satisface la restricción de proyectividad con respecto
 
 El modelo de aprendizaje profundo propuesto se apoya en el uso de redes neuronales recurrentes sobre estructuras derivadas del árbol de dependencias de la oración de entrada y las entidades señaladas, para obtener una representación de la hipotética relación existente entre ellas.
 
-\subsection{Hipótesis del Camino en el Árbol de Dependencias}
+\subsection{Hipótesis del Camino en el Árbol de Dependencias}\label{subsec:dep_tree_hip}
 
 Como fue explicado en el capítulo~\ref{chapter:information_extraction}, la información más completa para resolver el problema de la Extracción de Relaciones se encuentra en la oración íntegra. Sin embargo, se maneja por muchos autores la suposición de que el árbol de dependencias de la oración de entrada condensa la información vital, a la vez que desecha otras fuentes de desinformación.
 
@@ -231,7 +257,7 @@ La figura \ref{fig:rel_model} ilustra la arquitectura descrita.
 	\caption{Arquitectura de red utilizada. La oración de entrada es \textbf{El cáncer de pulmón puede causar muerte prematura} Y las entidades en cuestión son \textbf{cáncer de pulmón} y \textbf{muerte}.}\label{fig:rel_model}
 \end{figure}
 
-\section{Entrenamiento}
+\subsection{Entrenamiento}
 
 Debido a que la salida correspondiente a cada relación es independiente de las otras, el modelo se entrena para minimizar una función de entropía binaria.
 Siendo $k$ el número de relaciones definidas, la función de pérdida entre la salida del modelo $x$ y un vector binario $y$ objetivo, se define como:
