@@ -14,13 +14,13 @@ En la misma, los problemas de extracción de entidades y relaciones están organ
 
 \begin{description}
 	\item[Tarea A:] Extracción y clasificación de entidades.
-	Dada una lista de documentos del ámbito del eHealth en idioma español, el objetivo de	esta tarea es identificar las entidades por documento y clasificarlas según el tipo de concepto que representan~(Concept, Action, Predicate o Reference).
+	Dada una lista de documentos del ámbito del eHealth en idioma español, el objetivo de	esta tarea es identificar las entidades por documento y clasificarlas según el tipo de concepto que representan~(\texttt{Concept}, \texttt{Action}, \texttt{Predicate} o \texttt{Reference}).
 	Las palabras clave son todos los conceptos relevantes~(de una o múltiples palabras) que representan elementos
 	semánticamente importantes en la oración.
 	La figura \ref{fig:entites_ex} muestra las palabras clave relevantes que aparecen en un conjunto de oraciones de ejemplo.
 	
 	La entrada de la Tarea A es un documento de texto con una oración	por línea. Todas las oraciones han sido tokenizadas a nivel de palabra~(o sea, signos de puntuación, paréntesis, etc., son separados del texto que los rodea).
-	La salida de la Tarea A es una lista de extensiones de texto, identificadas por secuencias de tuplas <INICIO, FIN>, en las que se mencionan conceptos.
+	La salida de la Tarea A es una lista de extensiones de texto, identificadas por secuencias de tuplas \texttt{<INICIO,FIN>}, en las que se mencionan conceptos.
 	Estas instancias específicas de conceptos son llamadas entidades y se les asigna un identificador numérico.
 	
 	\item[Tarea B:] Extracción de relaciones.
@@ -29,7 +29,7 @@ En la misma, los problemas de extracción de entidades y relaciones están organ
 	Ocho de las trece relaciones semánticas presentes en el conjunto de datos pueden ser observadas en la figura \ref{fig:relations_ex}.
 		
 	La entrada de la Tarea B es un documento de texto con una oración	por línea, y una colección de entidades numeradas y etiquetadas.
-	La salida de la Tarea B es una lista de tuplas de la forma $\langle$id1, id2, rel$\rangle$ que denota la ocurrencia de una relación de tipo rel, con origen en la entidad con identificador id1, y destino en id2.
+	La salida de la Tarea B es una lista de tuplas de la forma \texttt{<id1,id2,rel>} que denota la ocurrencia de una relación de tipo \texttt{rel}, con origen en la entidad con identificador \texttt{id1}, y destino en \texttt{id2}.
 	
 \end{description} 
 	
@@ -84,13 +84,13 @@ La métrica de evaluación es la medida \textit{F1} estándar, donde la precisi�
 
 \begin{description}
 	
-	\item[Anotación correcta:] Reportada cuando una palabra clave es encontrada cuya sección de texto (secuencia de tuplas <INICIO, FIN>) coincide	exactamente con la de una en el corpus de referencia.
+	\item[Anotación correcta:] Reportada cuando una palabra clave es encontrada cuya sección de texto (secuencia de tuplas \texttt{<INICIO, FIN>}) coincide	exactamente con la de una en el corpus de referencia.
 	Solo una coincidencia correcta por entrada en la colección de referencia puede ser reportada.
 	Por tanto, las entradas duplicadas cuentan como Sobrantes.
 	
 	\item[Anotación incorrecta:] Reportada cuando una entidad es identificada correctamente en lo que a sección de texto respecta, pero no le fue asignado el tipo de concepto correcto.
 	
-	\item[Anotación parcial:] Reportada cuando dos intervalos <INICIO, FIN> tienen una intersección no vacía, como es el caso de “vías respiratorias”	y “respiratorias”.
+	\item[Anotación parcial:] Reportada cuando dos intervalos \texttt{<INICIO, FIN>} tienen una intersección no vacía, como es el caso de “vías respiratorias”	y “respiratorias”.
 	Notar que una anotación parcial es considerada solo sobre una única anotación correcta en la colección de referencia.
 	
 	\item[Anotación faltante:] Aquellas anotaciones que aparecen en la colección de	referencia pero no en la respuesta.
@@ -127,7 +127,10 @@ Análogamente, se definen fórmulas similares para los escenarios 2 y 3, pero us
 \subsection{Implementación y Bibliotecas Externas}
 
 La implementación de las propuestas se realizó utilizando el lenguaje de programación Python.
-Se utilizó la biblioteca \textbf{PyTorch} como marco para el trabajo con redes neuronales profundas.
+Se utilizó la biblioteca \texttt{PyTorch} como marco para el trabajo con redes neuronales profundas.
+Para la obtención de los \textit{embedding} contextuales se utilizó una variente del modelo \texttt{BERT}~\cite{devlin2018bert}, en este caso: \texttt{bert-base-multilingual-uncased}, a través de la interfaz que brinda la biblioteca \texttt{pytorch-pretrained-bert}~\footnote{https://pypi.org/project/pytorch-pretrained-bert/}.
+Los \textit{embeddings} de palabras fueron entrenados utilizado el algoritmo \texttt{word2vec}~\cite{mikolov2013efficient} con la arquitectura \texttt{skipgram}, utilizando la interfaz de la biblioteca \texttt{gensim}~\footnote{https://pypi.org/project/gensim/}.
+Las etiquetas de POS-tag así como el árbol de dependencias fueron obtenidos utilizando la biblioteca \texttt{spaCy}~\footnote{https://spacy.io/}.
 
 \subsection{Infraestructura Computacional}
 
