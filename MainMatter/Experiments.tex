@@ -7,54 +7,154 @@
 Este capítulo se centra en la descripción del los detalles de la implementación de las propuestas descritas para la extracción de entidades y relaciones.
 Se explican las configuraciones de los exprimentos realizados y el conjunto de técnicas experimentales empleadas, se muestran los resultados de dicho estudio y se someten los mismo a una posterior discusión.
 
-La implementación de las propuestas se realizó utilizando el lenguaje de programación Python.
-Se utilizó la biblioteca \textbf{PyTorch} como marco para el trabajo con redes neuronales profundas.
-Para entrenar los modelos y llevar a cabo los distintos exprimentos se utilizaron los conjuntos de datos correspondientes a los eventos eHealth-KD en sus ediciones del 2019~\footnote{repo github} y 2020~\footnote{repo github}~\footnote{Se especificará adecuadamente que datos fueron utilizados en cada uno de los experimentos}.
-
 \section{Marco Experimental}
 
-Los algoritmos definidos para la resolución de ambas tareas, están basados en técnicas de aprendizaje profundo.
-Una de las implicaciones de esta decisión, es que una vez fijo el algoritmo, existe una amplia variedad de hiperparámetros que se pueden ajustar en virtud de obtener mejores resultados computacionales.
-Los experimentos realizados toman como referencia la configuración de hiperparámetros que mejores resultados alcanzó.
+El desarrollo de los experimentos de este trabajo se enmarca en el evento \textit{eHealth Knowledge Discovery Challenge}, en sus ediciones de 2019 y 2020.
+En la misma, los problemas de extracción de entidades y relaciones están organizados en dos tareas.
 
-Para la evaluación definitiva de las propuestas se utilizaron métricas de tipo F1, que fueron definidas para la evaluación de las propuestas en la competencia eHealth-KD 2019~\cite{ehalth19}.
-La precisión y el recobrado se definen en términos de \textit{Correct}(\textbf{C}), \textit{Missing}(\textbf{M}), \textit{Spurious}(\textbf{S}), \textit{Incorrect}(\textbf{I}) y \textit{Partial}\textbf{(P)}.
+\begin{description}
+	\item[Tarea A:] Extracción y clasificación de entidades.
+	Dada una lista de documentos del ámbito del eHealth en idioma español, el objetivo de	esta tarea es identificar las entidades por documento y clasificarlas según el tipo de concepto que representan~(Concept, Action, Predicate o Reference).
+	Las palabras clave son todos los conceptos relevantes~(de una o múltiples palabras) que representan elementos
+	semánticamente importantes en la oración.
+	La figura \ref{fig:entites_ex} muestra las palabras clave relevantes que aparecen en un conjunto de oraciones de ejemplo.
+	
+	La entrada de la Tarea A es un documento de texto con una oración	por línea. Todas las oraciones han sido tokenizadas a nivel de palabra~(o sea, signos de puntuación, paréntesis, etc., son separados del texto que los rodea).
+	La salida de la Tarea A es una lista de extensiones de texto, identificadas por secuencias de tuplas <INICIO, FIN>, en las que se mencionan conceptos.
+	Estas instancias específicas de conceptos son llamadas entidades y se les asigna un identificador numérico.
+	
+	\item[Tarea B:] Extracción de relaciones.
+	La Tarea B extiende los resultados de la Tarea A, a partir de enlazar las palabras claves previamente detectadas y etiquetadas en cada oración.
+	El propósito de esta tarea es reconocer todas las relaciones semánticas relevantes entre los conceptos identificados.
+	Ocho de las trece relaciones semánticas presentes en el conjunto de datos pueden ser observadas en la figura \ref{fig:relations_ex}.
+		
+	La entrada de la Tarea B es un documento de texto con una oración	por línea, y una colección de entidades numeradas y etiquetadas.
+	La salida de la Tarea B es una lista de tuplas de la forma $\langle$id1, id2, rel$\rangle$ que denota la ocurrencia de una relación de tipo rel, con origen en la entidad con identificador id1, y destino en id2.
+	
+\end{description} 
+	
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\linewidth]{Graphics/entities.png}
+	\caption{Anotación de las entidades relevantes y sus respectivas clases en un conjunto de oraciones de ejemplo.} \label{fig:entites_ex}
+\end{figure}
 
-Una entidad es clasificada como \textit{Correct}, si coincide con alguna de las entidades de la oración en cuanto a las palabras que contiene y la etiqueta asignada a la misma.
-Si las palabras coinciden pero la etiqueta no es correcta se clasifica como \textit{Incorrect}.
-Si existe un solapamiento entre una entidad extraída y una presente en la oración con la misma etiqueta, cuenta como una ocurrencia \textit{Partial}.
-Si en una entidad extraída no ocurre ninguno de los casos anteriores se considera \textit{Spurious}.
-Por su parte, una entidad presente en la oración y no detectada por el modelo se considera \textit{Missing}.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.9\linewidth]{Graphics/relations.png}
+	\caption{Anotación de las relaciones semánticas relevantes en un conjunto de oraciones de ejemplo.} \label{fig:relations_ex}
+\end{figure}
 
-:as relaciones solo se clasifican en términos de \textit{Correct}, \textit{Spurious} y \textit{Missing}, teniendo en cuenta las entidades que enlaza y la etiqueta asignada a la misma.
 
-La fórmula \ref{equation:f1_formula} define la métrica F1 utilizada.
-Los subíndices $A$ y $B$ identifican a las tareas de extracción de entidades y relaciones, respectivamente.
+\subsection{Escenarios de Evaluación}
+
+El concurso propone un escenario de evaluación principal (Escenario 1) donde las dos tareas descritas anteriormente se realizan de forma secuencial.
+La entrega que obtiene el puntaje F1 más alto para el Escenario 1 es
+considerada el sistema con mejor rendimiento general en el concurso.
+Adicionalmente, los participantes tuvieron la oportunidad de enfocarse en una de las dos tareas específicamente, a partir de entregar resultados en dos escenarios opcionales, uno para cada tarea.
+Estos dos escenarios adicionales miden el rendimiento en tareas individuales de forma independiente entre ellas.
+
+\begin{description}
+	
+\item[Escenario 1 [A+B]:] Recibe como entrada un conjunto de oraciones a anotar.
+El sistema produce tanto las instancias concretas de entidades
+presentes en la colección como las relaciones existentes entre ellas.
+El rendimiento general del sistema se mide en función
+del rendimiento en ambas tareas, según se describe en la sección 4.1.2.
+ 
+\item[Escenario 2 [A]:] Recibe como entrada un conjunto de oraciones a anotar.
+El sistema produce únicamente el conjunto de entidades presentes en la colección (con la correspondiente clasificación según el tipo de concepto que representa).
+
+\item[Escenario 3 [B]:] Recibe como entrada un conjunto de oraciones y una colección de entidades anotadas y etiquetadas en el texto.
+El sistema produce únicamente el conjunto de relaciones que existen entre las instancias concretas de los conceptos.
+
+\item[Escenario 4 [A+B~(Dominio General)]:] Este escenario fue incluido como una novedad en el evento del año 2020.
+Es similar al Escenario 1 de evaluación, pero considera oraciones cuyo contenido es de dominio general.
+
+\end{description} 
+
+El Escenario 1 es considerado más complejo que solucionar cada escenario opcional por separado, dado que los errores que generen los sistemas al enfrentar la Tarea A son transmitidos a la Tarea B.
+Por esta razón, es considerado el principal medio de evaluación.
+
+\subsection{Métricas de Evaluación}
+
+La métrica de evaluación es la medida \textit{F1} estándar, donde la precisión y recobrado se definen en términos de coincidencias \textbf{[C]orrectas}, \textbf{[I]ncorrectas},
+\textbf{[P]arciales}, \textbf{[F]altantes} y \textbf{[S]obrantes}.
+
+
+\begin{description}
+	
+	\item[Anotación correcta:] Reportada cuando una palabra clave es encontrada cuya sección de texto (secuencia de tuplas <INICIO, FIN>) coincide	exactamente con la de una en el corpus de referencia.
+	Solo una coincidencia correcta por entrada en la colección de referencia puede ser reportada.
+	Por tanto, las entradas duplicadas cuentan como Sobrantes.
+	
+	\item[Anotación incorrecta:] Reportada cuando una entidad es identificada correctamente en lo que a sección de texto respecta, pero no le fue asignado el tipo de concepto correcto.
+	
+	\item[Anotación parcial:] Reportada cuando dos intervalos <INICIO, FIN> tienen una intersección no vacía, como es el caso de “vías respiratorias”	y “respiratorias”.
+	Notar que una anotación parcial es considerada solo sobre una única anotación correcta en la colección de referencia.
+	
+	\item[Anotación faltante:] Aquellas anotaciones que aparecen en la colección de	referencia pero no en la respuesta.
+	
+	\item[Anotación sobrante:] Aquellas anotaciones que aparecen en la respuesta pero no en la colección de referencia.
+	
+\end{description}
+
+Una mayor precisión significa que el número de anotaciones sobrantes
+es menor que el número de anotaciones faltantes, y un mayor recobrado significa lo opuesto.
+A las coincidencias parciales se les asigna la mitad de la
+puntuaciones de las coincidencias correctas, mientras que a las anotaciones faltantes y sobrantes no se les da puntos.
+Las fórmulas de evaluación para el Escenario 1 se definen de la siguiente forma:
 
 \begin{equation*}
-R_{sc1} = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + M_A + C_B + M_B}
+P = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + S_A + C_B + S_B}
 \end{equation*}
 
 \begin{equation*}
-P_{sc1} = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + S_A + C_B + S_B}
+R = \frac{C_A + \frac{1}{2}P_A + C_B}{C_A + I_A + P_A + F_A + C_B + F_B}
 \end{equation*}
 
-\begin{equation}
-F1_{sc1} = 2\frac{P_{sc1}R_{sc1}}{P_{sc1}+R_{sc1}}
-\end{equation}\label{equation:f1_formula}
+\begin{equation*}
+F1 = 2\frac{PR}{P+R}
+\end{equation*}
 
-Los escenarios 2 y 3 se evaluaron de manera equivalente utilizando las fórmulas correspondientes.
+Siendo $P$ y $R$ los valores de precisión y recobrado respectivamente.
+
+Análogamente, se definen fórmulas similares para los escenarios 2 y 3, pero usando solo las estadísticas de la tarea A y B, respectivamente.
+
+\subsection{Corpus de Evaluación}
+
+
+\subsection{Implementación y Bibliotecas Externas}
+
+La implementación de las propuestas se realizó utilizando el lenguaje de programación Python.
+Se utilizó la biblioteca \textbf{PyTorch} como marco para el trabajo con redes neuronales profundas.
+
+\subsection{Infraestructura Computacional}
+
+
+\section{Resultados Computacionales}
 
 Se recogen en este estudio distintas configuraciones de hiperparámetros exploradas, así como detalles del proceso de entrenamiento de las propuestas con mejores resultados.
 Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad el tamaño del conjunto de datos utilizado.
 Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
+En el caso del modelo para la extracción de relaciones, se evaluaron adicionalmente las hipótesis sobre el árbol de dependencias.
 
-En el caso del modelo para la extracción de relaciones, se evaluó adicionalmente las hipótesis sobre el árbol de dependencias.
+\subsection{Entrenamiento y Ajuste de Parámetros}
+
+Los algoritmos definidos para la resolución de ambas tareas, están basados en técnicas de aprendizaje profundo.
+Una de las implicaciones de esta decisión, es que una vez fijo el algoritmo, existe una amplia variedad de hiperparámetros que se pueden ajustar en virtud de obtener mejores resultados computacionales.
+
+\subsection{Resultados por Escenarios de Evaluación}
+
+\subsection{Curvas de Aprendizaje}
+
+\subsection{Análisis Ablasivo}
+
+\subsection{Hipótesis del Árbol de Depedencias}
+
 Para ello se entrenó un modelo con una complejidad semejante en términos de parámetros.
 Se sustiuyó el camino en el árbol de dependencias por la secuencia de palabras de la oración completa, y se cambió el procesamiento mediante Tree-LSTM del subárbol relevante a las entidades, por una codificación basada en BiLSTM de las palabras que forman parte de las mismas.
 
-
-\section{Resultados Computacionales}
 
 \section{Discusión}
 %===================================================================================
