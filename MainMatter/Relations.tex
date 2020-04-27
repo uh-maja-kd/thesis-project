@@ -138,11 +138,6 @@ Tanto $S_{e_1}$, $S_{e_2}$ como $C(n_{e_1}, n_{e_2})$, son estructuras formadas 
 	
 \end{description}
 
-Para la obtención de los \textit{embedding} contextuales se utilizó una variente del modelo BERT~\cite{devlin2018bert}, en este caso: \textbf{bert-base-multilingual-uncased}, a través de la interfaz que brinda la biblioteca \textbf{pytorch-pretrained-bert}~\footnote{https://pypi.org/project/pytorch-pretrained-bert/}.
-Los \textit{embeddings} de palabras fueron entrenados utilizado el algoritmo \textbf{word2vec}~\cite{mikolov2013efficient} con la arquitectura \textbf{skipgram}, utilizando la interfaz de la biblioteca \textbf{gensim}~\footnote{https://pypi.org/project/gensim/}.
-Las etiquetas de POS-tag así como el árbol de dependencias fueron obtenidos utilizando la biblioteca \textbf{spaCy}~\footnote{https://spacy.io/}.
-En el caso de las etiquetas BMEWO-V y los tipos de las entidades se obtienen a partir de las salidas del modelo de extracción de entidades descrito en el capítulo \ref{chapter:entities}.
-
 A partir de esta representación distruibuida de las estructuras $S_{e_1}$, $S_{e_2}$ y $C(n_{e_1}, n_{e_2})$, se obtiene una representación de la oración y las entidades señaladas.
 Primeramente, una capa BiLSTM transforma la representación de cada palabra de la secuencia $C(n_{e_1}, n_{e_2})$, para incluir información contextual de las palabras anteriores y posteriores de cada posición.
 
