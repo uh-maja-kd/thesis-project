@@ -136,7 +136,7 @@ Las etiquetas de POS-tag así como el árbol de dependencias fueron obtenidos ut
 
 
 
-\subsection{Entrenamiento y Ajuste de Parámetros}
+\subsection{Entrenamiento y Ajuste de Parámetros}\label{sec:training}
 
 Los algoritmos definidos para la resolución de ambas tareas, están basados en técnicas de aprendizaje profundo.
 Una de las implicaciones de esta decisión, es que una vez fijo el algoritmo, existe una amplia variedad de hiperparámetros que se pueden ajustar en virtud de obtener mejores resultados computacionales.
@@ -228,26 +228,62 @@ Las tablas \ref{table:params_taskA} y \ref{table:params_taskB} describen las con
 	
 \end{table*}
 		
-El entrenamiento de los modelos fue acompañado de un procedimiento de validación cruzada, que permitió determinar un número conveniente de épocas de entrenamiento, ajustar la complejidad de los modelos, así como seleccionar los más efectivos para someterlos a evaluación.
+Fueron entrenados modelos para ser evaluados tanto en el contexto del evento \textit{eHealth-KD} 2019, como en la edición del presente año.
+En cada caso, la optimización de los modelos se realizó utilizando la colección de entrenamiento proveída a los concursantes.
+El entrenamiento fue acompañado de un procedimiento de validación cruzada, que permitió determinar un número conveniente de épocas de entrenamiento, ajustar la complejidad de los modelos, así como seleccionar los más efectivos para someterlos a evaluación; para lo cual se utilizó la respectiva colección de desarrollo.
 
 
 \section{Resultados Computacionales}
 
-Se recogen en este estudio los resultados para los distintos escenarios de evaluación descritos en la subsección \ref{subsec:eval_sce}.
-Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad el tamaño del conjunto de datos utilizado.
-Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
-En el caso del modelo para la extracción de relaciones, se evaluaron adicionalmente las hipótesis sobre el árbol de dependencias.
+Los modelos fueron evaluados en los distintos escenarios de los eventos \textit{eHealth-KD} 2019 y en su edición del 2020.
+Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeño de todas propuestas participantes en los distintos escenarios de ambos eventos. 
+
+(Tablas, muchas tablas)
+
+(Muela de las tablas)
+
 
 \subsection{Resultados por Escenarios de Evaluación}
 
+A continuación se profundiza en el desempeño de la propuesta en los escenarios, no solo en términos de medida $F1$, sino también de precisión y recobrado.
+Las tablas \ref{table:sce_19} y \ref{table:sce_20} resumen los resultados obtenidos en los eventos correspondientes a cada año, respectivamente.
+
+(Tablas, muchas tablas)
+
+(Muela de las tablas)
+
 \subsection{Curvas de Aprendizaje}
+
+Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad de los modelos el tamaño del conjunto de datos utilizado.
+Los gráficos \ref{plot:learning_curves_ent} y \ref{plot:learning_curves_rel} muestran los resultados de entrenar con conjuntos de datos de distintos tamaños los modelos de entidades y relaciones respectivamente.
+Los experimentos se realizaron utilizando las colecciones de entrenamiento y desarrollo del evento correspondiente al año 2020.
+
+(Graficos, muchas graficos)
+
+(Muela de los graficos)
 
 \subsection{Análisis Ablasivo}
 
-\subsection{Hipótesis del Árbol de Depedencias}
+Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
+Las tablas \ref{table:ablation_ent} y \ref{table:ablation_rel} resumen el desempeño de las distintas configuraciones consideradas.
+Los experimentos fueron realizados utilizando los datos del evento correspondiente al año 2020.
 
+(Tablas, muchas tablas)
+
+(Muela de las tablas)
+
+\subsection{Hipótesis del Árbol de Dependencias}
+
+En el caso del modelo para la extracción de relaciones, se evaluaron adicionalmente las hipótesis sobre el árbol de dependencias.
 Para ello se entrenó un modelo con una complejidad semejante en términos de parámetros.
 Se sustiuyó el camino en el árbol de dependencias por la secuencia de palabras de la oración completa, y se cambió el procesamiento mediante Tree-LSTM del subárbol relevante a las entidades, por una codificación basada en BiLSTM de las palabras que forman parte de las mismas.
+Este modelo tiene un total de X parámetros, cifra cercana a los Y parámetros del modelo basado en estructuras de dependencias.
+
+La tabla \ref{table:dep_cmp} muestra una comparación del desempeño de las dos variantes, en el entorno del evento correspondiente al año 2020. Se incluyen los resultados obtenidos por otros participantes como referencia.
+
+(Tablas, muchas tablas)
+
+(Muela de las tablas)
 
 
 \section{Discusión}
