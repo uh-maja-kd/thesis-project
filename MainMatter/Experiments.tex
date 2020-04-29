@@ -14,22 +14,22 @@ En la misma, los problemas de extracción de entidades y relaciones están organ
 
 \begin{description}
 	\item[Tarea A:] Extracción y clasificación de entidades.
-	Dada una lista de documentos del ámbito del eHealth en idioma español, el objetivo de	esta tarea es identificar las entidades por documento y clasificarlas según el tipo de concepto que representan~(\texttt{Concept}, \texttt{Action}, \texttt{Predicate} o \texttt{Reference}).
-	Las palabras clave son todos los conceptos relevantes~(de una o múltiples palabras) que representan elementos
-	semánticamente importantes en la oración.
-	La figura \ref{fig:entites_ex} muestra las palabras clave relevantes que aparecen en un conjunto de oraciones de ejemplo.
+	Es objetivo de esta tares es, dada una lista de documentos~(oraciones) en idioma Español con contenido médico, extraer las entidades relevantes presentes en dicho documento, y clasificarlas de acuerdo al tipo de concepto que representan~(\texttt{Concept}, \texttt{Action}, \texttt{Predicate} o \texttt{Reference}).
+	Las entidades son conceptos semánticamente importantes dentro de una oración.
+	Pueden estar formadas por una o varias palabras, las cuales no necesariamente aparecen de manera continua en el texto de la oración.
+	La figura \ref{fig:entites_ex} muestra las entidades relevantes que aparecen en un conjunto de oraciones de ejemplo.
 	
-	La entrada de la Tarea A es un documento de texto con una oración	por línea. Todas las oraciones han sido tokenizadas a nivel de palabra~(o sea, signos de puntuación, paréntesis, etc., son separados del texto que los rodea).
-	La salida de la Tarea A es una lista de extensiones de texto, identificadas por secuencias de tuplas \texttt{<INICIO,FIN>}, en las que se mencionan conceptos.
-	Estas instancias específicas de conceptos son llamadas entidades y se les asigna un identificador numérico.
+	La entrada de la Tarea A es un documento de texto con una oración	por línea.
+	La salida es una colección de entidades, con un identificador numérico asociado a cada una.
+	Cada entidad esta constituída por una lista de segmentos del texto \texttt{<inicio, fin>}, que representan las palabras por las que está conformado dicho concepto.
 	
 	\item[Tarea B:] Extracción de relaciones.
-	La Tarea B extiende los resultados de la Tarea A, a partir de enlazar las palabras claves previamente detectadas y etiquetadas en cada oración.
-	El propósito de esta tarea es reconocer todas las relaciones semánticas relevantes entre los conceptos identificados.
-	Ocho de las trece relaciones semánticas presentes en el conjunto de datos pueden ser observadas en la figura \ref{fig:relations_ex}.
+	La Tarea B parte del conjunto de entidades obtenido en la Tarea A.
+	El objetivo de esta tarea es indentificar las relaciones semánticas relevantes entre los conceptos encontrados en cada oración.
+	Ocho de las trece relaciones semánticas presentes en los conjuntos de datos pueden ser observadas en la figura \ref{fig:relations_ex}.
 		
-	La entrada de la Tarea B es un documento de texto con una oración	por línea, y una colección de entidades numeradas y etiquetadas.
-	La salida de la Tarea B es una lista de tuplas de la forma \texttt{<id1,id2,rel>} que denota la ocurrencia de una relación de tipo \texttt{rel}, con origen en la entidad con identificador \texttt{id1}, y destino en \texttt{id2}.
+	La entrada de la Tarea B es un documento de texto con una oración	por línea, y una colección de entidades, con su correspondiente identificador numérico y etiqueta.
+	La salida de la Tarea B es una lista de tuplas de la forma \texttt{<id1,id2,rel>} que denota la existencia de una relación con origen en la entidad con identificador \texttt{id1}, y destino en \texttt{id2}, y que se le asigna el tipo \texttt{rel}.
 	
 \end{description} 
 	
@@ -49,8 +49,6 @@ En la misma, los problemas de extracción de entidades y relaciones están organ
 \subsection{Escenarios de Evaluación}\label{subsec:eval_sce}
 
 El concurso propone un escenario de evaluación principal (Escenario 1) donde las dos tareas descritas anteriormente se realizan de forma secuencial.
-La entrega que obtiene el puntaje F1 más alto para el Escenario 1 es
-considerada el sistema con mejor rendimiento general en el concurso.
 Adicionalmente, los participantes tuvieron la oportunidad de enfocarse en una de las dos tareas específicamente, a partir de entregar resultados en dos escenarios opcionales, uno para cada tarea.
 Estos dos escenarios adicionales miden el rendimiento en tareas individuales de forma independiente entre ellas.
 
@@ -71,10 +69,7 @@ El sistema produce únicamente el conjunto de relaciones que existen entre las i
 \item[Escenario 4 [A+B~(Dominio General)]:] Este escenario fue incluido como una novedad en el evento del año 2020.
 Es similar al Escenario 1 de evaluación, pero considera oraciones cuyo contenido es de dominio general.
 
-\end{description} 
-
-El Escenario 1 es considerado más complejo que solucionar cada escenario opcional por separado, dado que los errores que generen los sistemas al enfrentar la Tarea A son transmitidos a la Tarea B.
-Por esta razón, es considerado el principal medio de evaluación.
+\end{description}
 
 \subsection{Métricas de Evaluación}
 
@@ -99,8 +94,6 @@ La métrica de evaluación es la medida \textit{F1} estándar, donde la precisi�
 	
 \end{description}
 
-Una mayor precisión significa que el número de anotaciones sobrantes
-es menor que el número de anotaciones faltantes, y un mayor recobrado significa lo opuesto.
 A las coincidencias parciales se les asigna la mitad de la
 puntuaciones de las coincidencias correctas, mientras que a las anotaciones faltantes y sobrantes no se les da puntos.
 Las fórmulas de evaluación para el Escenario 1 se definen de la siguiente forma:
@@ -176,6 +169,11 @@ Las tablas \ref{table:params_taskA} y \ref{table:params_taskB} describen las con
 			Épocas & 20\\
 			
 			\hline
+			\hline
+			
+			\textbf{Total de parámetros} & X\\
+			
+			\hline
 			
 		\end{tabular}
 	
@@ -219,6 +217,11 @@ Las tablas \ref{table:params_taskA} y \ref{table:params_taskB} describen las con
 		\textit{Learning rate} & 0.001\\
 		Épocas & 30\\
 		Muestreo negativo & 300\% de ej. positivos\\
+		
+		\hline
+		\hline
+		
+		\textbf{Total de parámetros} & X\\
 		
 		\hline
 		
