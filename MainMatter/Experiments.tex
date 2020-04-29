@@ -46,7 +46,7 @@ En la misma, los problemas de extracción de entidades y relaciones están organ
 \end{figure}
 
 
-\subsection{Escenarios de Evaluación}
+\subsection{Escenarios de Evaluación}\label{subsec:eval_sce}
 
 El concurso propone un escenario de evaluación principal (Escenario 1) donde las dos tareas descritas anteriormente se realizan de forma secuencial.
 La entrega que obtiene el puntaje F1 más alto para el Escenario 1 es
@@ -135,17 +135,108 @@ Las etiquetas de POS-tag así como el árbol de dependencias fueron obtenidos ut
 \subsection{Infraestructura Computacional}
 
 
-\section{Resultados Computacionales}
-
-Se recogen en este estudio distintas configuraciones de hiperparámetros exploradas, así como detalles del proceso de entrenamiento de las propuestas con mejores resultados.
-Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad el tamaño del conjunto de datos utilizado.
-Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
-En el caso del modelo para la extracción de relaciones, se evaluaron adicionalmente las hipótesis sobre el árbol de dependencias.
 
 \subsection{Entrenamiento y Ajuste de Parámetros}
 
 Los algoritmos definidos para la resolución de ambas tareas, están basados en técnicas de aprendizaje profundo.
 Una de las implicaciones de esta decisión, es que una vez fijo el algoritmo, existe una amplia variedad de hiperparámetros que se pueden ajustar en virtud de obtener mejores resultados computacionales.
+
+Las tablas \ref{table:params_taskA} y \ref{table:params_taskB} describen las configuraciones de parámetros utilizadas cada uno de los modelos y para su entrenamiento.
+
+\begin{table*}[tb]\centering
+		\begin{tabular}{lc}
+			\hline
+			\textbf{Parámetro} & \textbf{Valor} \\
+			\hline
+			\hline
+			\multicolumn{2}{c}{\textbf{Entradas}}\\
+			\hline
+			\hline
+			Dim. del \textit{embedding} contextual & 9216~(12 capas)\\
+			Dim. del \textit{embedding} de palabras & 300\\
+			Dim. del \textit{embedding} de caracteres & 100\\
+			Dim. del \textit{embedding} de POS-tag & 100\\
+			
+			\hline
+			\hline
+			\multicolumn{2}{c}{\textbf{Red neuronal}}\\
+			\hline
+			\hline
+			
+			Dimensión de la BiLSTM & 300\\
+			
+			\hline
+			\hline
+			\multicolumn{2}{c}{\textbf{Entrenamiento}}\\
+			\hline
+			\hline
+			
+			Optimizador & Adam\\
+			\textit{Learning rate} & 0.001\\
+			Épocas & 20\\
+			
+			\hline
+			
+		\end{tabular}
+	
+	\caption{Configuración de parámetros del modelo de extracción de entidades. \textbf{[Arriba]} Red neuronal. \textbf{[Abajo]} Entrenamiento.}\label{table:params_taskA}
+	
+\end{table*}
+
+\begin{table*}[tb]\centering
+	\begin{tabular}{lc}
+		\hline
+		\textbf{Parámetro} & \textbf{Valor} \\
+		\hline
+		\hline
+		\multicolumn{2}{c}{\textbf{Entradas}}\\
+		\hline
+		\hline
+		Dim. del \textit{embedding} contextual & 768~(última capa)\\
+		Dim. del \textit{embedding} de palabras & 300\\
+		Dim. del \textit{embedding} de caracteres & 50\\
+		Dim. del \textit{embedding} de POS-tag & 50\\
+		Dim. del \textit{embedding} de dependencias & 50\\
+		Dim. del \textit{embedding} de las etiquetas BMEWO-V & 50\\
+		Dim. del \textit{embedding} del tipo de entidad & 50\\
+		
+		\hline
+		\hline
+		\multicolumn{2}{c}{\textbf{Red neuronal}}\\
+		\hline
+		\hline
+		
+		Dimensión de la BiLSTM & 100\\
+		Dimensión de la Tree-LSTM & 50\\
+		
+		\hline
+		\hline
+		\multicolumn{2}{c}{\textbf{Entrenamiento}}\\
+		\hline
+		\hline
+		
+		Optimizador & Adam\\
+		\textit{Learning rate} & 0.001\\
+		Épocas & 30\\
+		Muestreo negativo & 300\% de ej. positivos\\
+		
+		\hline
+		
+	\end{tabular}
+	
+	\caption{Configuración de parámetros del modelo de extracción de relaciones. \textbf{[Arriba]} Red neuronal. \textbf{[Abajo]} Entrenamiento.}\label{table:params_taskB}
+	
+\end{table*}
+		
+El entrenamiento de los modelos fue acompañado de un procedimiento de validación cruzada, que permitió determinar un número conveniente de épocas de entrenamiento, ajustar la complejidad de los modelos, así como seleccionar los más efectivos para someterlos a evaluación.
+
+
+\section{Resultados Computacionales}
+
+Se recogen en este estudio los resultados para los distintos escenarios de evaluación descritos en la subsección \ref{subsec:eval_sce}.
+Se analizaron las curvas de aprendizaje para medir el impacto que tiene en la efectividad el tamaño del conjunto de datos utilizado.
+Con el objetivo de medir la influencia de las representaciones distribuidas empleadas, se realizó un análisis ablasivo sobre las distintas componentes de la entrada de los modelos.
+En el caso del modelo para la extracción de relaciones, se evaluaron adicionalmente las hipótesis sobre el árbol de dependencias.
 
 \subsection{Resultados por Escenarios de Evaluación}
 
