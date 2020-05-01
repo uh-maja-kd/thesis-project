@@ -65,9 +65,20 @@ Particularmente se utiliz\'o como funci\'on de mezcla $f$ el promedio de los vec
 
 \subsection{Arquitectura del Modelo}
 
-El modelo recibe una secuencia de tokens como entrada como fue descrito en~\ref{sec:entrance}. La arquitectura se divide en tres niveles: (1) representaci\'on de los \emph{tokens}, (2) respresentaci\'on de la secuencia, y (3) predicci\'on de las etiquetas \emph{BMEWO-V} y la clasificaci\'on seg\'un las etiquetas \emph{Concept}, \emph{Action}, \emph{Reference}, \emph{Predicate}, \emph{None}, esta \'ultima en caso de no pertenecer a ninguna de las anteriores. La figura (PONER REF) resume la arquitectura del modelo.
+El modelo recibe una secuencia de tokens como entrada como fue descrito en~\ref{sec:entrance}. La arquitectura se divide en tres niveles: (1) representaci\'on de los \emph{tokens}, (2) respresentaci\'on de la secuencia, y (3) predicci\'on de las etiquetas \emph{BMEWO-V} y la clasificaci\'on seg\'un las etiquetas \emph{Concept}, \emph{Action}, \emph{Reference}, \emph{Predicate} y \emph{None}, esta \'ultima en caso de no pertenecer a ninguna de las anteriores. La figura~\ref{fig:ArcMod} y sdfsdf resumen la arquitectura del modelo.
 
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 10cm]{Imagenes/EntitiesModelRec.png}
+	\caption{Arquitectura del modelo de aprendizaje profundo para la extraccio\'on y clasificaci\'on de entidades con el CRF para la decodificaci\'on de las etiquetas \emph{BMEWO-V}.}\label{fig:ArcMod}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 10cm]{Imagenes/EntitiesModelClas.png}
+	\caption{Arquitectura del modelo de aprendizaje profundo para la extraccio\'on y clasificaci\'on de entidades con el CRF para la decodificaci\'on de las etiquetas de clasificaci\'on \emph{Concept}, \emph{Action}, \emph{Reference}, \emph{Predicate} y \emph{None},}\label{fig:ArcMod}
+\end{figure}
 
 En un primer nivel, el modelo se encarga de obtener la representaci\'on de cada token en la secuencia de entrada, para ello existe una capa intermedia que trabaja en funci\'on de transformar la caracter\'istica \emph{Char Indexes} en vectores, que junto al de \emph{PosTag} y el \emph{Embedding Contextual} forman la representaci\'on final del token. Una capa \textbf{CNN} convierte los \emph{Char Indexes} en un vector de \emph{embedding} que atrapa el significado sem\'antico del token a nivel de caracteres. Esto se incluye para que el modelo se auxilie de caracter\'isticas morfol\'ogicas de la palabra (como prefijos y sufijos) en caso de que el token no forme parte del vocabulario del \textbf{BERT} pre-entrenado. El vector obtenido a partir de la \textbf{CNN} concatenado con el vector de \emph{Embedding Contextual} y el de \emph{PosTag} forman la representaci\'on del token.
 
