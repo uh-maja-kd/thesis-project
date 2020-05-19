@@ -239,11 +239,51 @@ El entrenamiento fue acompañado de un procedimiento de validación cruzada, que
 \section{Resultados Computacionales}
 
 Los modelos fueron evaluados en los distintos escenarios de los eventos \textit{eHealth-KD} 2019 y en su edición del 2020.
-Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeño de todas propuestas participantes en los distintos escenarios de ambos eventos. 
+Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeño de todas propuestas participantes en los distintos escenarios de ambos eventos seg\'un la medida \emph{F1}. 
 
-(Tablas, muchas tablas)
+\begin{table*}[tb!]\centering
+	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2019. \label{table:results_19}}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		&  \multicolumn{2}{c|}{\textbf{Score($F_1$)}} \\
+		\hline
+		\textbf{Equipo} & \textbf{Escenario 1 (A+B)} & \textbf{Escenario 2 (A)} & \textbf{Escenario 3 (B)} \\
+		\hline
+		TALP	          	   &  0.6394 &  0.8203 &  0.6269 \\
+		coin\_flipper (ncatala) & 0.6218 &  0.7873 &  0.4933 \\	
+		LASTUS-TALN (abravo)   & 0.5816 &  0.8167 &  0.2298	\\
+		NLP\_UNED               & 0.5473 &  0.7543 &  0.5337 \\
+		Hulat-TaskAB           & 0.5413 &  0.7758 &  0.1231 \\	
+		\textbf{UH-MAJA-KD}    & \textbf{0.5189} &  \textbf{0.8156} &  \textbf{0.4336} \\	
+		lsi2\_uned              & 0.4934 &  0.7315 &  0.1231	\\
+		IxaMed                 & 0.4869 &  0.6825 &  0.4356 \\
+		baseline               & 0.4309 &  0.5466 &  0.1231 \\
+		Hulat-TaskA            & 0.4309 &  0.7903 &  0.1231 \\	
+		VSP             	   & 0.4289 &  0.5466 &  0.4933 \\	
+		\hline
+	\end{tabular}
+\end{table*}
 
-(Muela de las tablas)
+\begin{table*}[tb!]\centering
+	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2020. \label{table:results_19}}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		&  \multicolumn{2}{c|}{\textbf{Score($F_1$)}} \\
+		\hline
+		\textbf{Equipo} & \textbf{Escenario 1 (A+B)} & \textbf{Escenario 2 (A)} & \textbf{Escenario 3 (B)} &  \textbf{Escenario 4 (A+B)}\\
+		\hline
+		Vicomtech & 0.6655 & 0.8208 & 0.5832 & 0.5632 \\
+		Talp-UPC & 0.6266 & 0.8158 & 0.5747 & 0.5835  \\
+		\textbf{UH-MAJA-KD} & \textbf{0.6250} & \textbf{0.8143} & \textbf{0.5987} & \textbf{0.5477} \\
+		IXA-NER-RE & 0.5574 & 0.6918 & 0.633235 & 0.4788 \\
+		UH-MatCom &	0.5568 & 0.7949 & 0.5450 & 0.37307 \\
+		SINAI &	0.4206 & 0.8252 & 0.4617 & 0.28125 \\
+		HAPLAP & 0.3951 & 0.5419 & 0.3164 & 0.1377 \\
+		baseline & 0.3951 & 0.5419 & 0.1313 & 0.1377 \\
+		ExSim &	0.2456 & 0.3142 & 0.1313 & 0.1222 \\
+		\hline
+	\end{tabular}
+\end{table*}
 
 
 \subsection{Resultados por Escenarios de Evaluación}
