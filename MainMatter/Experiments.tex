@@ -365,7 +365,7 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		\hline
 		Vicomtech & 0.665564 & 0.679364 & 0.652315  \\
 		Talp-UPC & 0.626679 & 0.626969 & 0.626389 \\
-		UH-MAJA-KD & 0.625 & 0.634542 & 0.615741 \\
+		\textbf{UH-MAJA-KD} & \textbf{0.625} & \textbf{0.634542} & \textbf{0.615741} \\
 		IXA-NER-RE & 0.55748 & 0.58008 & 0.536574 \\
 		UH-MatCom & 0.556876 & 0.716157 & 0.455556 \\
 		SINAI & 0.42069 & 0.651456 & 0.310648 \\
@@ -375,6 +375,7 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		\hline
 	\end{tabular}
 \end{table*}
+
 
 \begin{table*}[tb!]\centering
 	\caption{Resultados en escenario 2 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario2}}
@@ -387,7 +388,7 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		SINAI & 0.825207 & 0.844633 & 0.806655 \\
 		Vicomtech & 0.820882 & 0.821622 & 0.820144 \\
 		Talp-UPC & 0.815836 & 0.807218 & 0.82464 \\
-		UH-MAJA-KD & 0.814312 & 0.820255 & 0.808453 \\
+		\textbf{UH-MAJA-KD} & \textbf{0.814312} & \textbf{0.820255} & \textbf{0.808453} \\
 		UH-MatCom & 0.794967 & 0.824952 & 0.767086 \\
 		IXA-NER-RE & 0.6918 & 0.726733 & 0.660072 \\
 		HAPLAP & 0.541978 & 0.503864 & 0.586331 \\
@@ -406,7 +407,7 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
 		\hline
 		IXA-NER-RE & 0.633235 & 0.647887 & 0.619231 \\
-		UH-MAJA-KD & 0.59879 & 0.629237 & 0.571154 \\
+		\textbf{UH-MAJA-KD} & \textbf{0.59879} & \textbf{0.629237} & \textbf{0.571154} \\
 		Vicomtech & 0.583243 & 0.671679 & 0.515385 \\
 		Talp-UPC & 0.574786 & 0.646635 & 0.517308 \\
 		UH-MatCom & 0.545035 & 0.682081 & 0.453846 \\
@@ -428,7 +429,7 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		\hline
 		Talp-UPC & 0.58353 & 0.604724 & 0.563772 \\
 		Vicomtech & 0.563251 & 0.594009 & 0.535521 \\
-		UH-MAJA-KD & 0.547739 & 0.608321 & 0.49813 \\
+		\textbf{UH-MAJA-KD} & \textbf{0.547739} & \textbf{0.608321} & \textbf{0.49813} \\
 		IXA-NER-RE & 0.478863 & 0.563202 & 0.416494 \\
 		UH-MatCom & 0.37307 & 0.726835 & 0.250935 \\
 		SINAI & 0.28125 & 0.626255 & 0.181346 \\
@@ -447,6 +448,14 @@ Las tablas \ref{table:sce_19} y \ref{table:sce_20} resumen los resultados obteni
 Como se puede observar en la tabla~\ref{table:sce_19}, el sistema presentado obtiene el primer lugar en el Escenario 1 (A + B) con una ligera diferencia con respecto al segundo mejor sistema. Cuando se comparan los resultados presentados en la tabla~\ref{table:sce_20}, el modelo obtiene el tercer lugar en la competencia en el Escenario 1 (A + B) con una diferencia de 0.001 aproximadamente con respecto al segundo lugar, lo cual significa que solo el sistema en primer lugar supera considerablemente al modelo presentado.
 
 En la tabla(PONER REF) se aprecian los resultados m\'as detallados del Escenario 2 (A) en el evento del 2019. Se puede notar que el modelo presentado para resolver la \emph{Tarea} A supera a todos los modelos presentados, obteniendo el primer lugar en dicha tarea. En cuanto a los resultados en el mismo escenario en el evento del 2020, presentados en la tabla(PONER REF), se puede apreciar que aunque se posiciona en cuarto lugar, el modelo obtiene resultados competitivos con respecto a los primeros tres lugares, donde los resultados de las primeras 4 posiciones son muy similares existiendo una diferencia que no supera el 2\%.
+
+La tabla~\ref{table:results_20_escenario1} muestra los resultados en el Escenario 1 (A + B) de la competencia en el 2020. Se puede observar como el sistema propuesto obtuvo el tercer lugar con una puntuaci\'on \textbf{F1} de 0.625, muy cerca del segundo lugar y lejos del cuarto y primer lugar. 
+
+La tabla~\ref{table:results_20_escenario2} muestra los resultados correspodientes al Escenario 2 (A) con una puntuaci\'on \textbf{F1} de 0.814 lo que coloca al modelo en la cuarta posici\'on pero con una diferencia de poco mas de un 1\% con respecto a los primeros tres lugares, por lo que el desempe\~no es bastante similar en dicha tarea con respecto a las primeras posiciones.
+
+La tabla~\ref{table:results_20_escenario3} muestra los resultados en el Escenario 3 (B) con una puntuaci\'on \textbf{F1} de 0.59879 logrando as\'i la segunda posici\'on en dicha tarea.
+
+La tabla~\ref{table:results_20_escenario4} muestra los resultados correspondientes al Escenario 4 (A + B) de dominio general, el cual eval\'ua las capacidades de generalizaci\'on del sistema, obteniendo una puntuaci\'on \textbf{F1} de 0.547 posicion\'andose as\'i en la tercera posici\'on en dicha tarea.
 
 (PONER LOS RESPECTIVOS A LOS ESCENARIOS DE RELACIONES)
  
