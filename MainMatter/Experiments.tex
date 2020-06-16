@@ -4,7 +4,7 @@
 \chapter{Análisis Experimental}\label{chapter:experiments}
 \addcontentsline{toc}{chapter}{Análisis Experimental}
 
-Este capítulo se centra en la descripción del los detalles de la implementación de las propuestas descritas para la extracción de entidades y relaciones.
+Este capítulo se centra en la descripción de los detalles de la implementación de las propuestas descritas para la extracción de entidades y relaciones.
 Se explican las configuraciones de los exprimentos realizados y el conjunto de técnicas experimentales empleadas, se muestran los resultados de dicho estudio y se someten los mismo a una posterior discusión.
 
 \section{Marco Experimental}
@@ -238,16 +238,37 @@ El entrenamiento fue acompañado de un procedimiento de validación cruzada, que
 
 \section{Resultados Computacionales}
 
-Los modelos fueron evaluados en los distintos escenarios de los eventos \textit{eHealth-KD} 2019 y en su edición del 2020.
-Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeño de todas propuestas participantes en los distintos escenarios de ambos eventos seg\'un la medida \emph{F1}. 
+Los modelos fueron evaluados en los distintos escenarios de los evento \textit{eHealth-KD} 2019 y en su edición del 2020. La tabla \ref{table:results_20} muestra los resultados en el evento del año 2020 en los distintos escenarios de evaluación. Por su parte, en la tabla \ref{table:results_19} se compara la propuesta con los sistemas participantes en la edición de 2019. En ambos casos aparecen resaltados los resultados de nuestro modelo.
 
 \begin{table*}[tb!]\centering
-	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2019. \label{table:results_19}}
+	
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		&  \multicolumn{4}{c|}{\textbf{Escenarios (Medida $F_1$)}} \\
+		\hline
+		\textbf{Equipo} & \textbf{1 (A+B)} & \textbf{2 (A)} & \textbf{3 (B)} &  \textbf{4 (A+B transfer)}\\
+		\hline
+		Vicomtech & 0.6655 & 0.8208 & 0.5832 & 0.5632 \\
+		Talp-UPC & 0.6266 & 0.8158 & 0.5747 & 0.5835  \\
+		\textbf{UH-MAJA-KD} & \textbf{0.6250} & \textbf{0.8143} & \textbf{0.5987} & \textbf{0.5477} \\
+		IXA-NER-RE & 0.5574 & 0.6918 & 0.633235 & 0.4788 \\
+		UH-MatCom &	0.5568 & 0.7949 & 0.5450 & 0.37307 \\
+		SINAI &	0.4206 & 0.8252 & 0.4617 & 0.28125 \\
+		HAPLAP & 0.3951 & 0.5419 & 0.3164 & 0.1377 \\
+		baseline & 0.3951 & 0.5419 & 0.1313 & 0.1377 \\
+		ExSim &	0.2456 & 0.3142 & 0.1313 & 0.1222 \\
+		\hline
+	\end{tabular}
+	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2020.\label{table:results_20}}
+\end{table*}
+
+\begin{table*}[tb!]\centering
+	 
 	\begin{tabular}{|c|c|c|c|}
 		\hline
-		&  \multicolumn{3}{c|}{\textbf{Score($F_1$)}} \\
+		&  \multicolumn{3}{c|}{\textbf{Escenarios (Medida $F_1$)}} \\
 		\hline
-		\textbf{Equipo} & \textbf{Escenario 1 (A+B)} & \textbf{Escenario 2 (A)} & \textbf{Escenario 3 (B)} \\
+		\textbf{Equipo} & \textbf{1 (A+B)} & \textbf{2 (A)} & \textbf{3 (B)} \\
 		\hline
 		TALP	          	   &  0.6394 &  0.8203 &  0.6269 \\
 		coin\_flipper (ncatala) & 0.6218 &  0.7873 &  0.4933 \\	
@@ -262,101 +283,84 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		VSP             	   & 0.4289 &  0.5466 &  0.4933 \\	
 		\hline
 	\end{tabular}
+	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2019.\label{table:results_19}}
 \end{table*}
 
-\begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 1 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario1}}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		&  \multicolumn{3}{c|}{\textbf{Escenario 1 (A + B)}} \\
-		\hline
-		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
-		\hline
-		TALP	          	   &  0.6394 &  0.6506 &  0.6286 \\
-		coin\_flipper (ncatala) & 0.6218 &  0.7454 &  0.5334 \\	
-		LASTUS-TALN (abravo)   & 0.5816 &  0.7740 &  0.4658	\\
-		NLP\_UNED               & 0.5473 & 0.6561 &  0.4695 \\
-		Hulat-TaskAB           & 0.5413 &  0.7734 &  0.4163 \\	
-		\textbf{UH-MAJA-KD}    & \textbf{0.5189} &  \textbf{0.5644} &  \textbf{0.4802} \\	
-		lsi2\_uned              & 0.4934 &  0.7397 & 0.3702	\\
-		IxaMed                 & 0.4869 &  0.6896 &  0.3763 \\
-		baseline               & 0.4309 &  0.5204 &  0.3677 \\
-		Hulat-TaskA            & 0.4309 &  0.5204 &  0.3677 \\	
-		VSP             	   & 0.4289 &  0.4551 &  0.4056 \\	
-		\hline
-	\end{tabular}
-\end{table*}
+%\begin{table*}[tb!]\centering
+%	\caption{Resultados en escenario 1 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario1}}
+%	\begin{tabular}{|c|c|c|c|}
+%		\hline
+%		&  \multicolumn{3}{c|}{\textbf{Escenario 1 (A + B)}} \\
+%		\hline
+%		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
+%		\hline
+%		TALP	          	   &  0.6394 &  0.6506 &  0.6286 \\
+%		coin\_flipper (ncatala) & 0.6218 &  0.7454 &  0.5334 \\	
+%		LASTUS-TALN (abravo)   & 0.5816 &  0.7740 &  0.4658	\\
+%		NLP\_UNED               & 0.5473 & 0.6561 &  0.4695 \\
+%		Hulat-TaskAB           & 0.5413 &  0.7734 &  0.4163 \\	
+%		\textbf{UH-MAJA-KD}    & \textbf{0.5189} &  \textbf{0.5644} &  \textbf{0.4802} \\	
+%		lsi2\_uned              & 0.4934 &  0.7397 & 0.3702	\\
+%		IxaMed                 & 0.4869 &  0.6896 &  0.3763 \\
+%		baseline               & 0.4309 &  0.5204 &  0.3677 \\
+%		Hulat-TaskA            & 0.4309 &  0.5204 &  0.3677 \\	
+%		VSP             	   & 0.4289 &  0.4551 &  0.4056 \\	
+%		\hline
+%	\end{tabular}
+%\end{table*}
+%
+%\begin{table*}[tb!]\centering
+%	\caption{Resultados en escenario 2 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario2}}
+%	\begin{tabular}{|c|c|c|c|}
+%		\hline
+%		&  \multicolumn{3}{c|}{\textbf{Escenario 2 (A) }} \\
+%		\hline
+%		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
+%		\hline
+%		TALP	& 0.8203 & 0.8073 & 0.8336	\\
+%		LASTUS-TALN (abravo) & 0.8167 & 0.7997 & 0.8344	 \\
+%		UH-MAJA-KD & 0.8156 & 0.7999 & 0.8320	\\
+%		Hulat-TaskA & 0.7903 & 0.7706 & 0.8111	\\
+%		coin\_flipper (ncatala) & 0.7873 & 0.7986 & 0.7763	\\
+%		Hulat-TaskAB & 0.7758 & 0.7500 & 0.8034	 \\
+%		NLP\_UNED & 0.7543 & 0.8069 & 0.7082	\\
+%		lsi2\_uned & 0.7315 & 0.7817 & 0.6873 \\	 
+%		IxaMed & 0.6825 & 0.6567 & 0.7105	 \\
+%		baseline & 0.5466 & 0.5129 & 0.5851	\\
+%		VSP & 0.5466 & 0.5129 & 0.5851	\\
+%		\hline
+%	\end{tabular}
+%\end{table*}
+%
+%\begin{table*}[tb!]\centering
+%	\caption{Resultados en escenario 3 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario3}}
+%	\begin{tabular}{|c|c|c|c|}
+%		\hline
+%		&  \multicolumn{3}{c|}{\textbf{Escenario 3 (B) }} \\
+%		\hline
+%		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
+%		\hline
+%		TALP   & 0.6269	& 0.6667 & 0.5915 \\
+%		NLP\_UNED	& 0.5337 & 0.6235 & 0.4665 \\
+%		VSP	 & 0.4933 & 0.5892 & 0.4243 \\	
+%		coin\_flipper (ncatala) & 0.4931 & 0.7133 & 0.3768 \\
+%		IxaMed & 0.4356 & 0.5195 & 0.3750 \\	 
+%		UH-MAJA-KD & 0.4336 & 0.4306 & 0.4366 \\
+%		LASTUS-TALN (abravo) & 0.2298 & 0.1705 & 0.3521 \\	 
+%		baseline & 0.1231 & 0.4878 & 0.0704 \\
+%		Hulat-TaskAB & 0.1231 & 0.4878 & 0.0704 \\
+%		Hulat-TaskA & 0.1231 & 0.4878 & 0.0704 \\
+%		lsi2\_uned & 0.1231 & 0.4878 & 0.0704 \\
+%		\hline
+%	\end{tabular}
+%\end{table*}
+
+\subsection{Resultados por Escenarios de Evaluación}
+
+A continuación se profundiza en el desempeño de la propuesta en los escenarios, no solo en términos de medida $F1$, sino también de precisión y recobrado.
+Las tablas \ref{table:results_20_escenario1}, \ref{table:results_20_escenario2}, \ref{table:results_20_escenario3}, \ref{table:results_20_escenario4} resumen los resultados obtenidos en los eventos correspondientes a cada año, respectivamente.
 
 \begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 2 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario2}}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		&  \multicolumn{3}{c|}{\textbf{Escenario 2 (A) }} \\
-		\hline
-		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
-		\hline
-		TALP	& 0.8203 & 0.8073 & 0.8336	\\
-		LASTUS-TALN (abravo) & 0.8167 & 0.7997 & 0.8344	 \\
-		UH-MAJA-KD & 0.8156 & 0.7999 & 0.8320	\\
-		Hulat-TaskA & 0.7903 & 0.7706 & 0.8111	\\
-		coin\_flipper (ncatala) & 0.7873 & 0.7986 & 0.7763	\\
-		Hulat-TaskAB & 0.7758 & 0.7500 & 0.8034	 \\
-		NLP\_UNED & 0.7543 & 0.8069 & 0.7082	\\
-		lsi2\_uned & 0.7315 & 0.7817 & 0.6873 \\	 
-		IxaMed & 0.6825 & 0.6567 & 0.7105	 \\
-		baseline & 0.5466 & 0.5129 & 0.5851	\\
-		VSP & 0.5466 & 0.5129 & 0.5851	\\
-		\hline
-	\end{tabular}
-\end{table*}
-
-\begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 3 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2019. \label{table:results_19_escenario3}}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		&  \multicolumn{3}{c|}{\textbf{Escenario 3 (B) }} \\
-		\hline
-		\textbf{Equipo} & \textbf{F1} & \textbf{Precision} & \textbf{Recobrado} \\
-		\hline
-		TALP   & 0.6269	& 0.6667 & 0.5915 \\
-		NLP\_UNED	& 0.5337 & 0.6235 & 0.4665 \\
-		VSP	 & 0.4933 & 0.5892 & 0.4243 \\	
-		coin\_flipper (ncatala) & 0.4931 & 0.7133 & 0.3768 \\
-		IxaMed & 0.4356 & 0.5195 & 0.3750 \\	 
-		UH-MAJA-KD & 0.4336 & 0.4306 & 0.4366 \\
-		LASTUS-TALN (abravo) & 0.2298 & 0.1705 & 0.3521 \\	 
-		baseline & 0.1231 & 0.4878 & 0.0704 \\
-		Hulat-TaskAB & 0.1231 & 0.4878 & 0.0704 \\
-		Hulat-TaskA & 0.1231 & 0.4878 & 0.0704 \\
-		lsi2\_uned & 0.1231 & 0.4878 & 0.0704 \\
-		\hline
-	\end{tabular}
-\end{table*}
-
-
-\begin{table*}[tb!]\centering
-	\caption{Resultados (medida $F_1$) en cada escenario, ordenados por el Escenario 1 en el evento \textit{eHealth-KD} 2020. \label{table:results_20}}
-	\begin{tabular}{|c|c|c|c|c|}
-		\hline
-		&  \multicolumn{4}{c|}{\textbf{Score($F_1$)}} \\
-		\hline
-		\textbf{Equipo} & \textbf{Escenario 1 (A+B)} & \textbf{Escenario 2 (A)} & \textbf{Escenario 3 (B)} &  \textbf{Escenario 4 (A+B)}\\
-		\hline
-		Vicomtech & 0.6655 & 0.8208 & 0.5832 & 0.5632 \\
-		Talp-UPC & 0.6266 & 0.8158 & 0.5747 & 0.5835  \\
-		\textbf{UH-MAJA-KD} & \textbf{0.6250} & \textbf{0.8143} & \textbf{0.5987} & \textbf{0.5477} \\
-		IXA-NER-RE & 0.5574 & 0.6918 & 0.633235 & 0.4788 \\
-		UH-MatCom &	0.5568 & 0.7949 & 0.5450 & 0.37307 \\
-		SINAI &	0.4206 & 0.8252 & 0.4617 & 0.28125 \\
-		HAPLAP & 0.3951 & 0.5419 & 0.3164 & 0.1377 \\
-		baseline & 0.3951 & 0.5419 & 0.1313 & 0.1377 \\
-		ExSim &	0.2456 & 0.3142 & 0.1313 & 0.1222 \\
-		\hline
-	\end{tabular}
-\end{table*}
-
-\begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 1 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario1}}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		&  \multicolumn{3}{c|}{\textbf{Escenario 1 (A + B)}} \\
@@ -374,11 +378,11 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		ExSim & 0.245644 & 0.312589 & 0.202315 \\	
 		\hline
 	\end{tabular}
+	\caption{Resultados en escenario 1 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario1}}
 \end{table*}
 
 
 \begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 2 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario2}}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		&  \multicolumn{3}{c|}{\textbf{Escenario 2 (A)}} \\
@@ -396,10 +400,10 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		ExSim & 0.314214 & 0.292117 & 0.339928 \\	
 		\hline
 	\end{tabular}
+	\caption{Resultados en escenario 2 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario2}}
 \end{table*}
 
 \begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 3 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario3}}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		&  \multicolumn{3}{c|}{\textbf{Escenario 3 (B)}} \\
@@ -417,10 +421,10 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		baseline & 0.131313 & 0.527027 & 0.07 \\	
 		\hline
 	\end{tabular}
+	\caption{Resultados en escenario 3 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario3}}
 \end{table*}
 
 \begin{table*}[tb!]\centering
-	\caption{Resultados en escenario 4 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario4}}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		&  \multicolumn{3}{c|}{\textbf{Escenario 4 (A + B)}} \\
@@ -438,12 +442,8 @@ Las tablas  \ref{table:results_19} y \ref{table:results_20} resumen el desempeñ
 		ExSim & 0.122282 & 0.253264 & 0.0805983 \\	
 		\hline
 	\end{tabular}
+	\caption{Resultados en escenario 4 en cuanto a medida F1, Precisi\'on y Recobrado \textit{eHealth-KD} 2020. \label{table:results_20_escenario4}}
 \end{table*}
-
-\subsection{Resultados por Escenarios de Evaluación}
-
-A continuación se profundiza en el desempeño de la propuesta en los escenarios, no solo en términos de medida $F1$, sino también de precisión y recobrado.
-Las tablas \ref{table:sce_19} y \ref{table:sce_20} resumen los resultados obtenidos en los eventos correspondientes a cada año, respectivamente.
 
 Como se puede observar en la tabla~\ref{table:sce_19}, el sistema presentado obtiene el primer lugar en el Escenario 1 (A + B) con una ligera diferencia con respecto al segundo mejor sistema. Cuando se comparan los resultados presentados en la tabla~\ref{table:sce_20}, el modelo obtiene el tercer lugar en la competencia en el Escenario 1 (A + B) con una diferencia de 0.001 aproximadamente con respecto al segundo lugar, lo cual significa que solo el sistema en primer lugar supera considerablemente al modelo presentado.
 
