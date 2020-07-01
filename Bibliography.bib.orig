@@ -4,8 +4,6 @@
 
 %Entities
 
-=======
->>>>>>> origin/entities-arquitecture
 @article{li2018survey,
   title={A survey on deep learning for named entity recognition},
   author={Li, Jing and Sun, Aixin and Han, Jianglei and Li, Chenliang},
@@ -992,7 +990,6 @@
   organization={IEEE}
 }
 
-<<<<<<< HEAD
 
 
 %Relations.Feature based
@@ -2543,16 +2540,119 @@
 
 %================================================================
 
+%================================================================
+%Relations
+
+=======
+>>>>>>> relations
+@inproceedings{covington2001fundamental,
+	title={A fundamental algorithm for dependency parsing},
+	author={Covington, Michael A},
+	booktitle={Proceedings of the 39th annual ACM southeast conference},
+	pages={95--102},
+	year={2001},
+	organization={Citeseer}
+}
+
+@article{nivre2005dependency,
+	title={Dependency grammar and dependency parsing},
+	author={Nivre, Joakim},
+	journal={MSI report},
+	volume={5133},
+	number={1959},
+	pages={1--32},
+	year={2005}
+}
+
+@article{lecerf1960programme,
+	title={Programme des conflits, modele des conflits},
+	author={Lecerf, Yves},
+	journal={Bulletin bimestriel de l’ATALA},
+	volume={1},
+	number={4},
+	pages={11--18},
+	year={1960}
+}
+
+
+@article{marcus1965notion,
+	title={Sur la notion de projectivit{\'e}},
+	author={Marcus, Solomon},
+	journal={Mathematical Logic Quarterly},
+	volume={11},
+	number={2},
+	pages={181--192},
+	year={1965},
+	publisher={Wiley Online Library}
+}
+
+@article{hays1964dependency,
+	title={Dependency theory: A formalism and some observations},
+	author={Hays, David G},
+	journal={Language},
+	volume={40},
+	number={4},
+	pages={511--525},
+	year={1964},
+	publisher={JSTOR}
+}
+
+@article{zwicky1985heads,
+	title={Heads},
+	author={Zwicky, Arnold M},
+	journal={Journal of linguistics},
+	volume={21},
+	number={1},
+	pages={1--29},
+	year={1985},
+	publisher={Cambridge University Press}
+}
+
+@misc{richard1990english,
+	title={English Word Grammar},
+	author={Richard, Hudson},
+	year={1990},
+	publisher={Basil Blackwell}
+}
+
+@article{chomsky1956three,
+	title={Three models for the description of language},
+	author={Chomsky, Noam},
+	journal={IRE Transactions on information theory},
+	volume={2},
+	number={3},
+	pages={113--124},
+	year={1956},
+	publisher={IEEE}
+}
+
+@article{mikolov2013efficient,
+	title={Efficient estimation of word representations in vector space},
+	author={Mikolov, Tomas and Chen, Kai and Corrado, Greg and Dean, Jeffrey},
+	journal={arXiv preprint arXiv:1301.3781},
+	year={2013}
+}
+
+@article{devlin2018bert,
+	title={Bert: Pre-training of deep bidirectional transformers for language understanding},
+	author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+	journal={arXiv preprint arXiv:1810.04805},
+	year={2018}
+}
+
+@article{tai2015improved,
+	title={Improved semantic representations from tree-structured long short-term memory networks},
+	author={Tai, Kai Sheng and Socher, Richard and Manning, Christopher D},
+	journal={arXiv preprint arXiv:1503.00075},
+	year={2015}
+}
+
+<<<<<<< HEAD
+
+
+%================================================================
+
 
 
 =======
-@inproceedings{schuster2012japanese,
-  title={Japanese and korean voice search},
-  author={Schuster, Mike and Nakajima, Kaisuke},
-  booktitle={2012 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  pages={5149--5152},
-  year={2012},
-  organization={IEEE}
-}
-
->>>>>>> origin/entities-arquitecture
+>>>>>>> relations
