@@ -7,6 +7,14 @@
 
 %===================================================================================
 
+<<<<<<< HEAD
+\section{Modelo}
+
+El modelo propuesto es un \emph{StackBiLSTM-CRF} que tiene como entrada \emph{bert embeddings} pre-entrenados, \emph{postag embeddings} que son entrenados junto al modelo y \emph{char embeddings} que se entrenan junto al modelo a partir de una \textbf{CNN}. El modelo tiene como decodificadior para la predicci\'on de las etiquetas correspondientes a cada token un \textbf{CRF}.
+
+\subsection{Entrada del Modelo}\label{sec:entrance}
+Se recibe como entrada una oraci\'on en texto plano, la cual necesita preprocesamiento para construir la entrada apropiada del modelo. El primer paso es tokenizar las oraciones dado que todas las entradas del modelo esperan una secuencia de tokens.
+=======
 En este capítulo se hace una descripción de las técnicas empleadas para la resolución de la tarea de Extracción de Entidades, donde se describe como funciona el modelo de aprendizaje profundo propuesto, la construcci\'on de su entrada a partir de una oraci\'on, entre ellas la obtenci\'on de los \emph{Embeddings Contextuales} de las palabras de una oraci\'on hacienqdo uso de \textbf{BERT}. Finalmente se describe cada una de las componentes del modelo de aprendizaje profundo y su funcionamiento.
 
 
@@ -16,18 +24,41 @@ El modelo propuesto es un \emph{BiLSTM-CRF} apilado que tiene como entrada \emph
 
 \subsection{Entrada del Modelo}\label{sec:entrance}
 Se recibe como entrada una oraci\'on en texto plano, la cual necesita preprocesamiento para construir la entrada apropiada del modelo. El primer paso es tokenizar las oraciones dado que todas las entradas del modelo esperan una secuencia de tokens. Para esto se utiliza la tokenizaci\'on por espacios y basada en reglas.
+>>>>>>> origin/entities-arquitecture
 
 Por cada token en el cual una oraci\'on fue dividida, la entrada respectiva a ese token consiste de una lista de tres vectores de rasgos.
 
 \begin{description}
 	\item[Vector de PoS-tag:] Es un vector \emph{one-hot} de codificaci\'on de la informaci\'on de \emph{Part of Speech} (\textbf{PoS}).
 	\item[Codificaci\'on de los caracteres:] Es la concatenaci\'on de los vectores \emph{one-hot} de codificaci\'on de cada uno de los caracteres contenidos en la palabra. 
+<<<<<<< HEAD
+	\item[\'Bert embedding:] Es un vector de \emph{embedding} de la palabra conformado por la concatenaci\'on de los vectores que representan a dicha palabra en cada una de las capas de \textbf{BERT}.
+=======
 	\item[Embedding Contextual:] Es un vector de \emph{embedding} de la palabra conformado por la concatenaci\'on de los vectores que representan a dicha palabra en cada una de las capas de \textbf{BERT}.
+>>>>>>> origin/entities-arquitecture
 	 
 \end{description} 
 
 Para obtener la \emph{Codificaci\'on de los caracteres} se utiliz\'o el alfabeto (VER COMO DESCRIBIMOS EL ALFABETO). Para extraer la informaci\'on de \textbf{PoS-tag} se utiliza la librer\'ia de python \textbf{spacy}~\footnote{spacy.io}. 
 
+<<<<<<< HEAD
+Para la construcci\'on de los \emph{bert embeddings} correspondientes a cada token se sigue el siguiente procedimiento. Se toma la oraci\'on y se le agregan al inicio y al final las cadenas de texto "\emph{[CLS]}" y "\emph{[SEP]}" respectivamente. Luego esta nueva oraci\'on es tokenizada por el \emph{BertTokenizer} (PONER REFERENCIA o una breve explicaci\'on de este tokenizer). Luego estos tokens son llevados a \'indices con respecto al vocabulario de \textbf{BERT}. Adem\'as se contruye la m\'ascara de atenci\'on poniendo a todos los tokens el valor de 1, dado que no es necesario para nuestros objetivos hacer \emph{padding} de las oraciones. Luego la secuencia de \'indices de los tokens en el vocabulario de \textbf{BERT} y la m\'ascara de atenci\'on son pasadas como entrada del modelo de \textbf{BERT}, obteniendo asi como salida la codificaci\'on de cada una de las capas de \textbf{BERT}.
+
+Luego el \emph{bert embedding} de cada token se construye a partir de la concatenaci\'on de la codificaci\'on de dicho token en las 12 capas de \textbf{BERT}. Debido a la tokenizaci\'on del tipo \emph{Word Piece} realizada por el \emph{BertTokenizer} para las palabras que no se encuentran contenidas en el vocabulario de \textbf{BERT}, se crea un solo vector de \emph{embedding} resultante de calcular la media de cada uno de los vectores de \emph{embedding} correspondientes a las piezas en que se separo ese token durante la tokenizaci\'on.
+
+\subsection{Arquitectura del Modelo}
+
+El modelo recibe una secuencia de tokens como entrada como fue descrito en~\ref{sec:entrance}. El modelo se divide en 3 componentes: 
+
+\begin{enumerate}
+	\item Char Embedding CNN.
+	\item Las BiLSTM apiladas a nivel de tokens.
+	\item EL clasificador CRF. 
+\end{enumerate}
+
+
+El modelo est\'a organizado de la siguiente forma. Por cada token en la secuencia de entrada se construye primeramente los \emph{bert embeddings} siguiendo el procedimiento descrito en~\ref{sec:entrance}. Luego la capa \textbf{CNN} a nivel de caracteres recibe la secuencia de la codificaci\'on de cada uno de los caracteres contenidos en la palabra y produce un vector, capturando as\'i informaci\'on a nivel de caracteres en cada palabra. Estos dos vectores son concatenados junto al vector de informaci\'on de \textbf{PoS-Tag}, y todos en conjunto sirven como entrada de la primera capa \emph{BiLSTM} a nivel de palabras. La salida de esta capa correspondiente a cada token pasa por la entrada correspondiente a ese token en una segunda \emph{BiLSTM}. Finalmente la salida de esta \'ultima \emph{BiLSTM} sirve de entrada de la capa de \emph{CRF} la cual tiene como salida la etiqueta predicha para cada uno de los tokens pertenecientes a la oraci\'on. 
+=======
 Para la construcci\'on de los \emph{Emmbeddings Contextuales} correspondientes a cada token se utiliza \textbf{BERT}, siguiendo el siguiente procedimiento. Se toma la oraci\'on y se le agregan al inicio y al final las cadenas de texto \emph{"[CLS]"} y \emph{"[SEP]"} respectivamente. Luego esta nueva oraci\'on es tokenizada utilizando un algoritmo de tokenizaci\'on de subpalabras conocido como \emph{Word Piece}~\cite{schuster2012japanese}. El vocabulario de \emph{Word Piece} de \textbf{BERT} se computa aplicando el algoritmo de \emph{Word Piece tokenization} en cada secuencia de caracteres del corpus en el que se entren\'o \textbf{BERT}: \emph{Wikipedia and the Book Corpus}, lo cual resulta en 30 mil tokens de vocabulario. Como es l\'ogico, debido al tipo de tokenizaci\'on \emph{Word Piece}, se quisiera distinguir dentro del vocabulario a las palabras \emph{venoso} como una sola palabra y el sufijo \emph{venoso}, por lo que el sufijo se representa de la forma \emph{\#\#venoso} en el vocabulario.
 
 %por el \emph{BertTokenizer} de la biblitoeca \textbf{pytorch-pretrained-bert}~\footnote{https://pypi.org/project/pytorch-pretrained-bert/} utilizando un algoritmo de tokenizaci\'on de subpalabras conocido como \emph{Word Piece}~\cite{schuster2012japanese}. 
@@ -86,6 +117,7 @@ En un segundo nivel, el modelo procesa la secuencia de tokens para obtener repre
 Luego una segunda \emph{Bi-LSTM} apilada, que se utiliza tradicionalmente para a\~nadir m\'as poder representacional, recorre la secuencia devuelta por la primera \emph{Bi-LSTM} en ambos sentidos, para tambi\'en construir dos secuencias de vectores que son concatenadas, produciendo as\'i otra nueva secuencia que asocia un vector a cada token de la oraci\'on capturando informaci\'on m\'as compleja que la obtenida por la primera capa \emph{Bi-LSTM}.
 
 En el \'ultimo nivel, existen dos capas \emph{CRF} para la decodificaci\'on de etiquetas. La primera capa \emph{CRF} utiliza la representaci\'on obtenida del nivel anterior para predecir la secuencia de etiquetas \emph{BMEWO-V}. Mientras la segunda capa \emph{CRF} utiliza la representaci\'on obtenida del nivel anterior para predecir para cada token de la secuencia su clasificaci\'on como \emph{Concept}, \emph{Action}, \emph{Reference}, \emph{Predicate} y\emph{None} en caso que no sea ninguna de las anteriores.
+>>>>>>> origin/entities-arquitecture
 
 \subsection{Postprocesamiento}
 (PONER EL POSTPROCESAMIENTO RALIZADO A LA SALIDA DEL MODELO)
