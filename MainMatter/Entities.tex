@@ -88,14 +88,47 @@ Luego una segunda \emph{Bi-LSTM} apilada, que se utiliza tradicionalmente para a
 En el \'ultimo nivel, existen dos capas \emph{CRF} para la decodificaci\'on de etiquetas. La primera capa \emph{CRF} utiliza la representaci\'on obtenida del nivel anterior para predecir la secuencia de etiquetas \emph{BMEWO-V}. Mientras la segunda capa \emph{CRF} utiliza la representaci\'on obtenida del nivel anterior para predecir para cada token de la secuencia su clasificaci\'on como \emph{Concept}, \emph{Action}, \emph{Reference}, \emph{Predicate} y\emph{None} en caso que no sea ninguna de las anteriores.
 
 \subsection{Postprocesamiento}
-(PONER EL POSTPROCESAMIENTO RALIZADO A LA SALIDA DEL MODELO)
-La capa de CRF produce una clasificaci\'on acorde al sistema \emph{BMEWO-V} de etiquetado. Dicho sistema clasifica cada \emph{token} en \emph{B} para inicio de palabra clave, \emph{M} para continuaci\'on de palabra clave, \emph{E} para fin de palabra clave, \emph{W} para las palabras clave formadas por un solo \emph{token} y \emph{O} para los \emph{token} que no representan nada. Adem\'as, contempla la posibilidad de solapamiento entre palabras clave mediante la etiqueta \emph{V}. 
-\newline
-\newline
-Este sistema es adaptado al escenario del \emph{IberLEF 2019}, donde se clasifican las palabras clave en \emph{Concepto}, \emph{Acci\'on}, \emph{Referencia} o \emph{Predicado}. Para ello, cada etiqueta \emph{B}, \emph{M}, \emph{E}, \emph{W} se sufija con \emph{Concepto}, \emph{Acci\'on}, \emph{Referencia} o \emph{Predicado} de acuerdo al tipo de palabra clave (la etiqueta \emph{V} puede o no tenerlo). La salida del modelo es una secuencia de estas etiquetas sufijadas. 
-\newline
-\newline
-Para convertir la secuencia de etiquetas sufijadas que se obtiene de la oraci\'on dada, se realiza un procedimiento iterativo por la misma. Dicho procedimiento asume que el nivel de solapamiento entre palabras clave es menor o igual que dos. Esta suposici\'on, dada por las limitaciones del sistema \emph{BMEWO-V}, es lo que provoca mayor error de recobrado en este procedimiento. Dado esto, se mantienen durante la iteraci\'on los \emph{spans} de texto de las dos palabras clave que en potencia se est\'an construyendo. Estos dos objetos son actualizados en cada iteraci\'on de acuerdo a la etiqueta actual y la anterior. La etiqueta \emph{B} indica el inicio de una palabra clave, la \emph{M} la extensi\'on de la palabra clave que ya existe y la \emph{E} su finalizaci\'on. La etiqueta \emph{V} introduce un solapamiento, luego esta es la etiqueta que puede provocar que en alg\'un momento existan dos palabras clave en construcci\'on. La etiqueta \emph{W} causa que se reporte autom\'aticamente la existencia de una palabra clave en el \emph{span} de texto asociado a la misma. Luego de identificada una palabra clave, para clasificarla se utiliza un sitema de votaci\'on. Cada etiqueta que haya formado parte de una palabra clave que se report\'o como tal, "vot\'o" para decidir si era \emph{Concepto}, \emph{Acci\'on}, \emph{Referencia} o \emph{Predicado}, en correspodencia con su sufijo asociado. Cuando se reporta la palabra clave se clasifica de acuerdo a la mayor cantidad de votos que haya obtenido. Si est\'a equilibrada la votaci\'on se asume \emph{Concepto}.
+La primera capa de salida CRF produce una secuencia en el sistema de etiquetas $BMEWO$-$V$.
+Las siglas responden a la nomenclatura: $B$ para inicio de una entidad, $M$ para palabras interiores, $E$ para palabras del final, $W$ para aquellas palabras que constituyen una entidad por sí mismas y O para las palabras que no forman parte de ninguna entidad.
+También contempla la posibilidad de etiquetar palabras que pertecen a más de una entidad~(solapamiento de entidades), para lo cual incluye la etiqueta $V$.
+
+Para extraer el conjunto de entidades presentes en la oración a partir de la salida de la primera capa CRF, se utiliza un proceso que será referido de ahora en adelante como \textbf{decodificación}.
+La decodificación se complejiza debido a un elemento característico del problema descrito: las palabras pertenecientes a una misma entidad no aparecen necesariamente de manera contigua en la oración.
+Por ejemplo, en la oración: \textit{La vitamina D también juega un rol en su sistema nervioso, muscular e inmunitario.}, extraída de la colección de entrenamiento del evento \textit{eHealth-KD 2019}, aparecen marcadas como relevantes las entidades \textit{sistema nervioso}, \textit{sistema muscular} y \textit{sistema inmunitario}; las dos últimas formadas por palabras no consecutivas en la oración.
+Teniendo en cuenta esto, el proceso de decodificación se divide en dos etapas.
+En una primera instancia se detectan y extraen el conjunto de entidades entre las que se encuentran todas aquellas que están formadas por palabras no contiguas~(entidades discontinuas); luego, se extraen todas aquellas formadas por \textit{tokens} adyacentes~(entidades continuas), tomando como premisa que no existe ninguna discontinua restante.
+
+De acuerdo al uso correcto del idioma Español, se redujeron los escenarios donde pueden aparecer entidades discontinuas a las subsecuencias que se corresponden con las expresiones regulares: $(V^+)((M^*EO^*)+)(M^*E)$ y $((BO)^+)(B)(V^+)$.
+La primera agrupa a las entidades que comparten los \textit{tokens} iniciales; la segunda, a aquellas que comparten las palabras finales.
+Un ejemplo que se incluye en el primer grupo lo constituye el fragmento: \textit{cáncer de mama y de pulmón}, correctamente etiquetado como $VMEOME$, de donde se extraen las entidades \textit{cáncer de mama} y \textit{cáncer de pulmón}.
+Como ejemplo del segundo grupo se puede citar el fragmento: \textit{tejidos y órganos humanos}, correctamente etiquetado como $BOBV$, de donde se extraen las entidades \textit{tejidos humanos} y \textit{órganos humanos}.
+El proceso de decodificación de estos dos escenarios permite obtener satisfactoriamente las entidades discontinuas en las colecciones de entrenamiento y desarrollo con un error menor al $1\%$, asumiendo que las secuencias están etiquetadas correctamente.
+
+
+Después de a detección de posibles entidades discontinuas, la segunda etapa comienza asumiendo que las restantes están formadas por secuencias continuas de palabras.
+Para ello las etiquetas asociadas a todas las entidades extraídas en la primera etapa son cambiadas a $O$. 
+
+
+Para extraer las entidades continuas se lleva a cabo un proceso iterativo sobre la secuencia de etiquetas.
+Debido a las limitaciones del sistema $BMEWO$-$V$, también se asume que en una misma palabra no se solapan más de dos entidades.
+Abandonar esta suposición no aporta mucha mayor información~\footnote{Cuando se dice que no aporta mucha mayor información se hace referencia al hecho de que no es común, de acuerdo a la evaluación que se realizó sobre las colecciones de entrenamiento y desarrollo, encontrar tres o más entidades solapadas en una misma palabra}, además de que se introduce ambigüedad en el proceso dada por la incertidumbre que habría en dicho caso con respecto al número de entidades a las que el \textit{token} en cuestión pertenecería.
+Dado esto, a lo largo del procedimiento se matienen dos entidades en formación.
+En cada iteración estas dos entidades son creadas, extendidas o emitidas de acuerdo con reglas definidas en una máquina que actúa de manera determinista en función solamente de la etiqueta actual y la anterior en la secuencia que se procesa.
+La figura \ref{fig:automaton} resume la función de decisión de dicho autómata. 
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width = 10cm]{Graphics/automaton.png}
+	\caption{Función de decisión del autómata en la segunda etapa de la decodificación de la salida del modelo de extracción de entidades.}\label{fig:automaton}
+\end{figure}
+
+De acuerdo a evaluaciones efectuadas en las colecciones de entrenamiento y desarrollo, el proceso de decodificación de secuencias etiquetadas de manera correcta, extrae adecuadamente más del $98\%$ de las entidades presentes.
+
+
+Luego de identificadas las entidades, para clasificar cada una de ellas de acuerdo a su tipo, se utiliza un sistema de votaci\'on, basado en la salida de la segunda capa CRF.
+La misma asocia, para cada palabra en la oración de entrada, uno de los tipos de entidad, en este caso uno entre: \texttt{Concept}, \texttt{Action}, \texttt{Predicate} o \texttt{Reference}.
+Cada palabra produce para cada entidad a la que pertenece, un voto de acuerdo al tipo que le fue asociado.
+Luego, cada entidad se clasifica de según el tipo que mayor cantidad de votos que haya obtenido. Si está equilibrada la votación se asume \texttt{Concepto}, por ser la más frecuente por amplio margen en las colecciones estudiadas.
 
 
 
