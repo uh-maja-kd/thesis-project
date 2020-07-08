@@ -97,20 +97,22 @@ El trabajo de \emph{Huang et al.}\cite{huang2015bidirectional} est\'a entre los 
 
 \subsection{Neural Languaje Model}
 
-Los modelos de lenguajes es una familia de modelos describiendo la generaci\'on de secuencias. Dada una secuencia de \emph{tokens} $(t_1, t_2, ..., t_N)$, un \emph{forward language model} computa la probabilidad de la secuencia a partir de modelar la probabilidad del \emph{token} $t_k$ dado su historia $(t_1,...,t_{k-1})$~\cite{peters2017semi}.
+%Los modelos de lenguajes es una familia de modelos describiendo la generaci\'on de secuencias. Dada una secuencia de \emph{tokens} $(t_1, t_2, ..., t_N)$, un \emph{forward language model} computa la probabilidad de la secuencia a partir de modelar la probabilidad del \emph{token} $t_k$ dado su historia $(t_1,...,t_{k-1})$~\cite{peters2017semi}.
+%
+%\begin{equation}
+%	p(t_1, t_2, ..., t_N) = \prod_{k=1}^{N} p(t_k | t_1, t_2, ..., t_{k-1})
+%\end{equation}
+%
+%
+%A \emph{backward language} model es similar a un \emph{forward language} model, excepto que corre por la secuencia en orden reverso, prediciendo el \emph{token} dado el contexto futuro:
+%
+%\begin{equation}
+%p(t_1, t_2, ..., t_N) = \prod_{k=1}^{N} p(t_k | t_{k + 1}, t_{k + 2}, ..., t_N)
+%\end{equation}
+%
+%Para los modelos de lenguajes neuronales, la probabilidad del \emph{token} $t_k$ puede ser calculada a partir de la salida de una \textbf{RNN}. En cada posici\'on $k$, se puede obtener dos representaciones dependientes del contexto (forward and backward) y entonces combinarlas como el embedding de lenguaje del modelo final para el \emph{token} $t_k$.
 
-\begin{equation}
-	p(t_1, t_2, ..., t_N) = \prod_{k=1}^{N} p(t_k | t_1, t_2, ..., t_{k-1})
-\end{equation}
-
-
-A \emph{backward language} model es similar a un \emph{forward language} model, excepto que corre por la secuencia en orden reverso, prediciendo el \emph{token} dado el contexto futuro:
-
-\begin{equation}
-p(t_1, t_2, ..., t_N) = \prod_{k=1}^{N} p(t_k | t_{k + 1}, t_{k + 2}, ..., t_N)
-\end{equation}
-
-Para los modelos de lenguajes neuronales, la probabilidad del \emph{token} $t_k$ puede ser calculada a partir de la salida de una \textbf{RNN}. En cada posici\'on $k$, se puede obtener dos representaciones dependientes del contexto (forward and backward) y entonces combinarlas como el embedding de lenguaje del modelo final para el \emph{token} $t_k$. Este modelo de lenguaje aumentado ha sido emp\'iricamente verificado como \'util en numerosas tareas de etiquetado~\cite{liu2018efficient},~\cite{liu2018empower} donde se utiliza una arquitectura conocida como \textbf{LM-BiLSTM-CRF} donde el modelo de lenguaje y el modelo de etiquetado de secuencia comparten la misma capa a nivel de caracteres en una forma \emph{multi-task}. Los vectores de los \emph{embeddings} a nivel de caracteres, los \emph{word embeddings} pre-entrenados y la representaci\'on del modelo de lenguaje son concatenados y sirven de entrada para las \textbf{LSTM} a nivel de palabra. \emph{Peter et al.}~\cite{peters2018deep} propone la representaci\'on \textbf{ELMo} que es computada encima de dos capas de modelos de lenguaje bidireccional con convoluciones de caracteres. Este nuevo tipo de representaci\'on contextualizada profunda de una palabra es capaz de modelar caracter\'isticas complejas del uso de la palabra (sem\'antica y sintaxis), as\'i como el uso de variaciones a trav\'es de distintos contextos lingu\'isticos (polysemy). La figura~\ref{fig:LM} muestra las diferencias entre las arquitecturas de los modelos pre-entrenados.(VER COMO TODOS ESTOS MODELOS DE LM INFLUYEN EN NER)
+Los modelos de lenguaje aumentado han sido emp\'iricamente verificado como \'util en numerosas tareas de etiquetado incluida \textbf{NER}~\cite{liu2018efficient},~\cite{liu2018empower} donde se utiliza una arquitectura conocida como \textbf{LM-BiLSTM-CRF} donde el modelo de lenguaje y el modelo de etiquetado de secuencia comparten la misma capa a nivel de caracteres en una forma \emph{multi-task}. Los vectores de los \emph{embeddings} a nivel de caracteres, los \emph{word embeddings} pre-entrenados y la representaci\'on del modelo de lenguaje para cada palabra son concatenados y sirven de entrada para las \textbf{LSTM} a nivel de palabra. \emph{Peter et al.}~\cite{peters2018deep} propone la representaci\'on \textbf{ELMo} que es computada encima de dos capas de modelos de lenguaje bidireccional con convoluciones de caracteres. Este nuevo tipo de representaci\'on contextualizada profunda de una palabra es capaz de modelar caracter\'isticas complejas del uso de la palabra (sem\'antica y sintaxis), as\'i como el uso de variaciones a trav\'es de distintos contextos lingu\'isticos (polysemy) y ha sido utilizada en tareas de \textbf{NER} obteniendo buenos resultados. La figura~\ref{fig:LM} muestra las diferencias entre las arquitecturas de los modelos pre-entrenados.
 
 \subsection{Deep Transformer}
 
