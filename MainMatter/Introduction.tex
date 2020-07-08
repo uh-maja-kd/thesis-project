@@ -7,61 +7,65 @@
 En las últimas décadas ha habido un crecimiento explosivo en la generación y recolección de datos en forma de texto.
 Sin embargo, el gran volumen de información y la estructura semántica poco unificada que poseen los documentos escritos en lenguaje natural, hacen imposible a los investigadores encontrar buenos resultados eficientemente.
 Esto ha causado un gran interés por parte de la comunidad científica en desarrollar sistemas que asistan la transformación de textos en conocimiento útil.
-En este dominio se ubica el área de la extracción automática de información.
-En esta rama se sitúan los problemas de extracción de entidades, así como de relaciones que se establecen entre las mismas. 
+En este dominio se ubica el área de la extracción automática de información en la que, a su vez, se sitúan los problemas de extracción de entidades, así como de relaciones que se establecen entre las mismas.
 
 En la esfera de la salud, la extracción automática de información cobra particular importancia.
 Cada año se publica una gran cantidad de trabajos con temas y contenido médicos.
 Extraer de manera automatizada información de los mismos podría contribuir a la obtención de resultados no evidentes para los investigadores, que mejorarían potencialmente el diagnóstico y tratamiento de enfermedades complejas.
 
-Debido a que el español es una lengua menos generalizada que el inglés en términos de recursos computacionales disponibles, no existen muchos sistemas de extracción automática de información disponible.
+Debido a que el español es una lengua menos generalizada que el inglés en términos de recursos computacionales, no existen muchos sistemas de extracción automática de información disponibles en este idioma.
 Sin embargo, y concretamente en el dominio médico y de la salud, la colección de documentos escritos en idioma español es amplia y bien reconocida.
 El desarrollo de trabajos investigativos y esfuerzos para la construcción de tales sistemas para textos no estructurados escritos en este idioma, posibilitaría un mayor aprvechamiento de los recursos de información disponibles.
 
-Múltiples desafíos en la esfera de la extracción de información han sido organizados a lo largo de los años orientados a textos con contenido médico.
-Tres de ellos han sido el \emph{eHealth Knowledge Discovery Challenge} (eHealth-KD) propuesto en el taller \emph{TASS 2018}~\cite{martinez2018overview}, el \emph{eHealth Knowledge Discovery Challenge} propuesto en el taller \emph{IberLEF 2019}~\cite{ehealthkd19_overview} y el emph{IberLEF 2020}~\cite{ehealthkd20_overview}.
-Estos desafíos propusieron la resolución de dos problemas fundamentales en textos de dominio médico:
+Múltiples desafíos en la esfera de la extracción de información han sido organizados a lo largo de los años.
+Tres de ellos, particularmente orientados a textos con contenido médico en idioma español, fueron los eventos: \emph{eHealth Knowledge Discovery} (\textit{eHealth-KD}), propuesto en el Taller de Análisis Semántico en la SEPLN\footnote{Sociedad Española de Procesamiento de Lenguaje Natural}~(TASS) del año 2018~\cite{martinez2018overview} y otras dos tareas similares propuestas en el Forum de Evaluación de Lenguajes Ibéricos~(\textit{IberLEF} por su nombre en inglés), en sus ediciones correspondientes al año 2019~\cite{ehealthkd19_overview} y 2020~\cite{ehealthkd20_overview}.
+Estos desafíos propusieron la resolución de dos problemas fundamentales:
 
 \begin{enumerate}
-	\item Extracción de entidades.
-	\item Extracción de relaciones semánticas.
+	\item Extracción y clasificación de entidades.
+	\item Extracción y clasificación de relaciones semánticas.
 \end{enumerate}
 
-La primera  edici\'on difiri\'on ligeramente en cuanto a la definición de los distintos tipos de entidades y de relaciones semánticas de interés con respecto a las dos \'ultimas ediciones.
-
-El problema de la extracción de entidades aparece formulado en la literatura con el nombre de Reconocimiento de Entidades Nombradas~(NER por sus siglas en inglés).
+El problema de la extracción y clasificación de entidades aparece formulado en la literatura con el nombre de Reconocimiento de Entidades Nombradas~(NER por sus siglas en inglés).
 Se define como obtener, a partir de texto no estructurado en lenguaje natural, una lista de las secciones de dicho texto que contienen entidades~\cite{ehealthkd19_overview, nadeau2007survey}.
 Las entidades se han definido en la literatura de distintas formas, dependiendo del contexto, dominio y corpus utilizado.
-Por otra parte, el problema de la extracción de relaciones es más amplio, y está orientado a determinar qué relaciones semánticas se establecen en las entidades reconocidas en una oración~\cite{ehealthkd19_overview, kumar2017survey}.
+Por otra parte, el problema de la extracción y clasificación de relaciones es más amplio, y está orientado a determinar, a partir de un conjunto de relaciones predefinido, cuáles de ellas se establecen en las entidades reconocidas en una oración~\cite{ehealthkd19_overview, kumar2017survey}.
 
-Estos problemas han sido ampliamente abordados en la literatura con soluciones satisfactorias.
-Sin embargo, la efectividad de los mismos decae al cambiar el dominio de las entidades a otros más específicos.
-Propuestas recientes se basan en modelos de aprendizaje de máquinas, particularmente aprendizaje profundo.
-Aquellos que presentan enfoques supervisados requieren de corpus anotados, con la dificultad de que estos son dependientes del idioma.
-Los talleres \textit{eHealth TASS 2018} y \textit{eHealth IberLEF 2019}, fueron escenarios propicios para evaluar modelos orientados a resolver estos problemas, debido a que se propuso un sistema de anotación novedoso, y un corpus anotado para entrenar, validar y evaluar las propuestas~\cite{piad2019corpus}.
-Las soluciones presentadas se basan fundamentalmente en modelos de aprendizaje profundo, adaptando arquitecturas descritas en la literatura a los escenarios específicos de los concursos, obteniendo resultados bastante satisfactorios en las tareas de extracción de entidades, no tanto así de relaciones~\cite{zavala2018hybrid, medina2018joint, lopez2018sinai, catala2019coin_flipper, alvarado2019uh, colon2019hulat, medina2019talp, lara2019lsi2}.
+Los tres eventos citados fueron escenarios propicios para evaluar modelos orientados a resolver estos problemas, debido a que propusieron un sistema de anotación novedoso, y un corpus anotado para entrenar, validar y evaluar las propuestas~\cite{piad2019corpus}.
+Las soluciones presentadas se basan fundamentalmente en modelos de aprendizaje profundo, adaptando arquitecturas descritas en la literatura a los escenarios específicos de los concursos, obteniendo resultados bastante satisfactorios en las tareas de extracción de entidades, no tanto así de relaciones.
 
 La presente investigación surge como parte de la participación en estas competencias.
 La problemática que se plantea es precisamente la extracción y clasificación de entidades a partir de un modelo de anotación específico, en textos de contenido médico en idioma español, de tal forma que sea generalizable a otros dominios.
-La investigación permitirá evaluar si las técnicas de aprendizaje profundo son efectivas para la solución de dicha problemática.
+La investigación permitirá evaluar si las técnicas de aprendizaje profundo empleadas son efectivas para la solución de dicha problemática.
 
 
 \subsection*{Objetivos}
 
-La investigación se plantea como objetivo el diseño y validación de una solución computacional para la extracción de información a partir de lenguaje natural, que sea generarizable a múltiples dominios.
+La investigación se plantea como objetivo el diseño y validación de una solución computacional para la extracción de información en textos escritos en idioma español de contenido médico, que sea generarizable a múltiples dominios.
 
 Se proponen los siguientes objetivos específicos:
 
 \begin{enumerate}
-	\item Consultar literatura especializada para identificar las técnicas de extracción de entidades y relaciones predominantes en el estado del arte, tanto en textos de dominio general como de dominio específico. Asimilar contenido.
+	\item Consultar literatura especializada para identificar las técnicas de extracción y clasifiación de entidades y relaciones predominantes en el estado del arte, tanto en textos de dominio general como de dominio específico. Asimilar contenido.
 	
 	\item Diseñar propuesta propia que permita extraer y clasificar las entidades y relaciones relevantes, dentro del marco de un sistema de anotación específico.
 	
 	\item Construir un prototipo computacional para comprobar la eficacia de la estrategia propuesta.
 	
-	\item Evaluar la propuesta en un marco experimental que permita comparala con otras en el estado del arte.
+	\item Evaluar la propuesta en un marco experimental que permita compararla con otras en el estado del arte.
 	
 \end{enumerate}
+
+\subsection*{Contribuciones}
+
+El sistema de anotación propuesto en los eventos \textit{eHealth-KD} es un escenario para medir el estado del arte en los problemas de extracción de entidades y relaciones en textos escritos en idioma español.
+Los sistemas propuestos hasta ahora todavía no llegan a resolver satisfactoriamente los problemas planteado en dicho corpus.
+Luego, una contribución fundamental de este trabajo es la presentación de modelos competitivos en ambas subtareas del evento \textit{eHealth-KD 2020}, el cual reúne los resultados más relevantes obtenidos hasta ahora.
+
+Otra contribución de la investigación lo constituye el estudio sistemático realizado sobre algunos de los factores que influyen en la efectividad del modelo presentado.
+
+Particularmente, como parte de la propuesta para resolver el problema de extracción de entidades se introduce un algoritmo lineal para la reconstrucción de entidades a partir de secuencias de etiquetas en el sistema BMEWO-V, que tiene en cuenta la presencia de entidades solapadas y discontinuas.
+Y, como parte del estudio del modelo de extracción de relaciones propuesto, se valida la utilidad de información derivada del árbol de dependencias de la oración en la resolución de esta tarea en el contexto del evento \textit{eHealth-KD 2020}.
 
 \subsection*{Organización de la Tesis}
 
