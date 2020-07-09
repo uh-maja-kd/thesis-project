@@ -4,4 +4,13 @@
 \chapter*{Conclusiones}\label{chapter:conclusions}
 \addcontentsline{toc}{chapter}{Conclusiones}
 
+Este trabajo propone un sistema basado en aprendizaje profundo haciendo uso de t\'ecnicas presentes en el estado del arte para resolver las Tareas A y B de los eventos (PONER EVENTOS), relacionados con los problemas de NER y RE. El sistema propuesto se entrena y eval\'ua dentro del dominio de la salud, pero es generalizable a otros dominios. Entre las contribuciones fundamentales del trabajo destacan: (1) la implementaci\'on de un sistema de extracci\'on autom\'atica de las anotaciones desde oraciones en lenguaje natural; (2) el dise\~no de modelos para resolver las Tareas A y B respectivamente con resultados competitivos y similares al estado del arte; (3) el an\'alisis del impacto de algunas representaciones de la entrada resultados finales. 
+
+El modelo presentado para resolver la Tarea A es un modelo h\'ibrido de capas BiLSTM apiladas como codificadores contextuales y una capa CRF como decodificador de etiquetas. Se utilizaron como representaciones distribuidas de la entrada \emph{embeddings de caracteres y Pos-Tag} y \emph{embeddings contextuales} obtenidos a partir de un modelo preentrenado de BERT. Cada una de las representaciones de la entrada tiene un impacto positivo en el desempe\'no del modelo, siendo el de mayor impacto los \emph{embeddings contextuales} de BERT. Este modelo obtiene los mejores resultados en el segundo escenario de la competencia del evento (Nombre del evento) en su edici\'on 2019 y al mismo tiempo resultados competitivos en su edici\'on del a\~no 2020.(FALTA ANNADIR LO DE LAS LEARNING CURVES).
+
+(CONCLUSIONES DE LAS RELACIONES)
+
+(CONCLUSIONES CONJUNTAS)
+
+  
 %===================================================================================
